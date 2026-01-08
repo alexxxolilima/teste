@@ -1,905 +1,815 @@
 <!doctype html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-    <title>Cardápio — Brisa Lounge</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<meta name="theme-color" content="#050b14" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Brisa Lounge Bar</title>
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Poppins:wght@600;700&display=swap"
-        rel="stylesheet">
+<!-- Fontes Modernas -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 
-    <style>
-        :root {
-            --bg: #041024;
-            --panel: #071326;
-            --muted: #9fb0bf;
-            --gold: #D6A84A;
-            --gold-2: #FFB86B;
-            --glass: rgba(255, 255, 255, 0.03);
-            --card-radius: 14px;
-            --shadow: 0 12px 36px rgba(2, 8, 20, 0.55);
-            --accent-text: #071422;
-            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
+<style>
+/* --- VARIÁVEIS & RESET --- */
+:root {
+  --bg-body: #050b14;
+  --bg-card: #0e1623;
+  --bg-header: rgba(5, 11, 20, 0.95);
+  --text-main: #f0f4f8;
+  --text-muted: #94a3b8;
+  --gold: #d4af37; /* Dourado clássico do PDF */
+  --gold-glow: #fceabb;
+  --danger: #ef4444;
+  --success: #10b981;
+  --radius: 16px;
+  --shadow: 0 4px 20px rgba(0,0,0,0.4);
+  --font-main: 'Inter', sans-serif;
+  --font-display: 'Playfair Display', serif;
+  --safe-area-bottom: env(safe-area-inset-bottom);
+}
 
-        * {
-            box-sizing: border-box
-        }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; padding: 0; height: 100%; font-family: var(--font-main); background-color: var(--bg-body); color: var(--text-main); }
 
-        html,
-        body {
-            height: 100%
-        }
+/* --- ESTRUTURA --- */
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding-bottom: calc(100px + var(--safe-area-bottom)); /* Espaço extra para scroll final */
+}
 
-        body {
-            margin: 0;
-            background: linear-gradient(180deg, #02061a 0%, var(--bg) 100%);
-            color: #eef7fb;
-            font-size: 16px;
-            line-height: 1.28;
-            -webkit-tap-highlight-color: transparent;
-        }
+/* --- HEADER --- */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--bg-header);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
 
-        .app {
-            min-height: 100vh;
-            padding: 14px;
-            padding-bottom: 130px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px
-        }
+.brand-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
 
-        header {
-            display: flex;
-            gap: 12px;
-            align-items: center
-        }
+.logo {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--gold), #b8860b);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: #000;
+  font-weight: bold;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.2s;
+}
+.logo:active { transform: scale(0.95); }
 
-        .logo {
-            width: 62px;
-            height: 62px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, var(--gold), var(--gold-2));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            color: var(--accent-text);
-            font-size: 20px;
-            box-shadow: var(--shadow);
-            flex: 0 0 62px;
-            user-select: none;
-            touch-action: manipulation;
-        }
+.brand-info h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--gold);
+  letter-spacing: 0.5px;
+}
 
-        .brand {
-            display: flex;
-            flex-direction: column
-        }
+.brand-info p {
+  margin: 4px 0 0 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
 
-        .brand h1 {
-            margin: 0;
-            font-size: 18px;
-            font-family: Poppins, Inter
-        }
+/* --- BUSCA --- */
+.search-container {
+  position: relative;
+}
+.search-input {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 12px 16px 12px 44px;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 15px;
+  font-family: var(--font-main);
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.search-input:focus { border-color: var(--gold); background: rgba(255,255,255,0.08); }
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
 
-        .brand p {
-            margin: 0;
-            margin-top: 4px;
-            color: var(--muted);
-            font-size: 13px
-        }
+/* --- LISTA DE ITENS --- */
+main { padding: 20px; width: 100%; max-width: 800px; margin: 0 auto; }
 
-        .search-row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            margin-top: 6px
-        }
+.category-section {
+  margin-bottom: 32px;
+  animation: fadeIn 0.5s ease;
+}
 
-        .search {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px;
-            border-radius: 12px;
-            background: var(--glass);
-            border: 1px solid rgba(255, 255, 255, 0.03)
-        }
+.cat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
 
-        .search svg {
-            opacity: 0.95
-        }
+.cat-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--text-main);
+  margin: 0;
+}
 
-        .search input {
-            border: 0;
-            background: transparent;
-            outline: none;
-            color: inherit;
-            font-size: 15px;
-            width: 100%
-        }
+.cat-count { font-size: 12px; color: var(--gold); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
 
-        .list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 6px
-        }
+.item-card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  border: 1px solid rgba(255,255,255,0.03);
+  transition: transform 0.2s, background 0.2s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
 
-        .cat {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.005));
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            box-shadow: var(--shadow);
-            transition: transform .14s ease, box-shadow .14s;
-        }
+.item-card:active { transform: scale(0.98); background: rgba(255,255,255,0.08); }
 
-        .cat:hover {
-            transform: translateY(-3px)
-        }
+.item-content { flex: 1; }
+.item-name { font-weight: 600; font-size: 16px; margin-bottom: 6px; color: #fff; line-height: 1.3; }
+.item-desc { font-size: 13px; color: var(--text-muted); line-height: 1.4; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
 
-        .cat-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px
-        }
+.item-price {
+  font-weight: 700;
+  color: var(--gold);
+  font-size: 16px;
+  white-space: nowrap;
+  background: rgba(212, 175, 55, 0.1);
+  padding: 6px 10px;
+  border-radius: 8px;
+  text-align: right;
+}
 
-        .cat-name {
-            font-family: Poppins, Inter;
-            font-weight: 700;
-            font-size: 15px
-        }
+/* --- ADMIN UI (FIXA) --- */
+.admin-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(10, 15, 25, 0.98);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 12px 20px;
+  padding-bottom: max(12px, var(--safe-area-bottom));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 999; /* Garante que fique acima de tudo */
+  transform: translateY(150%);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+}
 
-        .cat-meta {
-            font-size: 13px;
-            color: var(--muted)
-        }
+.is-admin .admin-bar { transform: translateY(0); }
+.is-admin .app { padding-bottom: 160px; } /* Empurra o conteúdo pra cima */
 
-        .items {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 10px
-        }
+.admin-actions { display: flex; gap: 10px; overflow-x: auto; padding-right: 10px; }
+.admin-actions::-webkit-scrollbar { display: none; }
 
-        .item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 12px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.01);
-            border: 1px solid rgba(255, 255, 255, 0.02);
-            transition: background .12s, transform .12s;
-            cursor: pointer;
-        }
+.btn {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: filter 0.2s;
+  font-family: var(--font-main);
+}
 
-        .item:active {
-            transform: scale(.997)
-        }
+.btn-primary { background: var(--gold); color: #000; }
+.btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; }
+.btn-danger { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
+.btn:active { filter: brightness(0.9); }
 
-        .item-left {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            max-width: 70%
-        }
+/* Ações flutuantes nos cards (Admin) */
+.admin-card-actions {
+  display: none;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  gap: 6px;
+  background: rgba(0,0,0,0.6);
+  padding: 4px;
+  border-radius: 20px;
+}
+.is-admin .item-card:hover .admin-card-actions, 
+.is-admin .item-card:focus-within .admin-card-actions { display: flex; }
+/* Em mobile, sempre mostrar botões de admin nos cards */
+@media (hover: none) { .is-admin .admin-card-actions { display: flex; } }
 
-        .iname {
-            font-weight: 600;
-            font-size: 15px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis
-        }
+.btn-icon { width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--bg-body); border: 1px solid var(--gold); color: var(--gold); font-size: 16px; }
 
-        .inote {
-            font-size: 13px;
-            color: var(--muted);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis
-        }
+/* --- MODAL --- */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+  padding: 20px;
+}
+.modal-backdrop.active { display: flex; opacity: 1; }
 
-        .price {
-            font-weight: 800;
-            color: var(--gold);
-            min-width: 88px;
-            text-align: right
-        }
+.modal {
+  background: #151e2e;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 90vh;
+  animation: slideUp 0.3s ease;
+}
 
-        .modal-ingredients {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            padding: 8px 0
-        }
+@media (max-width: 600px) {
+  .modal-backdrop { align-items: flex-end; padding: 0; }
+  .modal { border-radius: 24px 24px 0 0; border-bottom: none; max-height: 85vh; width: 100%; }
+}
 
-        .ingredient {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 15px
-        }
+.modal-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); }
+.modal-title { font-family: var(--font-display); font-size: 20px; margin: 0; color: var(--gold); }
+.modal-close { background: none; border: none; color: var(--text-muted); font-size: 28px; cursor: pointer; padding: 0 8px; line-height: 1; }
 
-        .ingredient .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--gold);
-            flex: 0 0 10px
-        }
+.modal-body { padding: 24px; overflow-y: auto; }
+.modal-price-big { font-size: 28px; color: var(--gold); font-weight: 700; margin-top: 10px; text-align: right; }
 
-        .admin {
-            display: none !important
-        }
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--text-muted); }
+.form-input, .form-textarea, .form-select {
+  width: 100%;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 12px;
+  border-radius: 10px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+}
+.form-input:focus { border-color: var(--gold); outline: none; }
 
-        body.is-admin .admin {
-            display: inline-flex !important
-        }
+.modal-footer { padding: 16px 24px; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: flex-end; gap: 12px; background: rgba(0,0,0,0.2); padding-bottom: max(16px, var(--safe-area-bottom)); }
 
-        .admin[aria-hidden="true"] {
-            pointer-events: none;
-            opacity: 0;
-            user-select: none
-        }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-        .fab {
-            position: fixed;
-            right: 18px;
-            bottom: 106px;
-            width: 56px;
-            height: 56px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, var(--gold), var(--gold-2));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            color: var(--accent-text);
-            border: none;
-            box-shadow: 0 12px 36px rgba(3, 7, 18, 0.6);
-            z-index: 60;
-            cursor: pointer
-        }
-
-        .bottom {
-            position: fixed;
-            left: 12px;
-            right: 12px;
-            bottom: 14px;
-            height: 64px;
-            border-radius: 14px;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 12px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            z-index: 70;
-            gap: 8px
-        }
-
-        .btn {
-            padding: 8px 12px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            background: transparent;
-            color: var(--muted);
-            font-weight: 600
-        }
-
-        .btn.primary {
-            background: linear-gradient(90deg, var(--gold), var(--gold-2));
-            color: var(--accent-text);
-            border: none
-        }
-
-        .modal-wrap {
-            position: fixed;
-            inset: 0;
-            display: none;
-            align-items: flex-end;
-            justify-content: center;
-            padding: 18px;
-            z-index: 90
-        }
-
-        .modal {
-            width: 100%;
-            max-width: 820px;
-            background: linear-gradient(180deg, #071226, #051223);
-            border-radius: 14px;
-            padding: 14px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6)
-        }
-
-        .modal h3 {
-            margin: 0;
-            font-family: Poppins, Inter
-        }
-
-        .frow {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 10px
-        }
-
-        .input,
-        textarea,
-        select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            background: transparent;
-            color: inherit;
-            font-size: 15px
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 8px;
-            justify-content: flex-end;
-            margin-top: 12px
-        }
-
-        .modal-wrap.show {
-            display: flex
-        }
-
-        @media(min-width:720px) {
-            .app {
-                padding: 22px 40px 160px
-            }
-
-            .logo {
-                width: 76px;
-                height: 76px
-            }
-
-            .price {
-                min-width: 110px
-            }
-
-            .fab {
-                right: 28px;
-                bottom: 140px
-            }
-
-            .bottom {
-                left: 24px;
-                right: 24px;
-                bottom: 28px
-            }
-        }
-
-        button:focus,
-        input:focus,
-        select:focus,
-        textarea:focus {
-            outline: 2px solid rgba(255, 255, 255, 0.06);
-            outline-offset: 2px
-        }
-    </style>
+.empty-state { text-align: center; padding: 40px; color: var(--text-muted); font-style: italic; }
+</style>
 </head>
-
 <body>
-    <div class="app" id="app">
-        <header>
-            <div class="logo" id="logo" title="Toque longo — área reservada">BR</div>
-            <div class="brand">
-                <h1>Brisa Lounge</h1>
-                <p>Cardápio digital.</p>
-            </div>
-        </header>
 
-        <div class="search-row">
-            <div class="search" role="search" aria-label="Pesquisar no cardápio">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-                    <path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"
-                        d="M21 21l-4.35-4.35" />
-                    <circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.6" />
-                </svg>
-                <input id="q" placeholder="Pesquisar (ex: Caipirinha, Heineken)" inputmode="search" />
-            </div>
-        </div>
-
-        <main id="list" class="list" aria-live="polite"></main>
+<div class="app">
+  <header>
+    <div class="brand-row">
+      <!-- O logo é o "botão secreto" para admin -->
+      <div id="logoBtn" class="logo" title="Toque 7 vezes para Admin">B</div>
+      <div class="brand-info">
+        <h1>Brisa Lounge Bar</h1>
+        <p>Menu Digital</p>
+      </div>
     </div>
-
-    <button class="fab admin" id="fab" aria-hidden="true" tabindex="-1" title="Adicionar item">+</button>
-
-    <div class="bottom admin" id="bottomBar" aria-hidden="true">
-        <div style="display:flex;gap:8px;align-items:center">
-            <button id="btnAddCat" class="btn" aria-hidden="true" tabindex="-1">Nova seção</button>
-            <button id="btnAddItem" class="btn" aria-hidden="true" tabindex="-1">Novo item</button>
-            <button id="btnAdmin" class="btn" aria-hidden="true" tabindex="-1">Área interna</button>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center">
-            <input id="urlLoad" type="text" placeholder="Cole a URL pública do cardápio" aria-hidden="true"
-                tabindex="-1"
-                style="background:transparent;border:1px solid rgba(255,255,255,0.03);padding:8px;border-radius:8px;color:var(--muted);min-width:140px" />
-            <button id="btnLoadUrl" class="btn" aria-hidden="true" tabindex="-1">Trazer</button>
-            <button id="btnExport" class="btn" aria-hidden="true" tabindex="-1">Salvar cópia</button>
-        </div>
+    <div class="search-container">
+      <span class="search-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </span>
+      <input type="text" id="searchInput" class="search-input" placeholder="O que vamos beber hoje? (ex: Gin, Heineken)">
     </div>
+  </header>
 
-    <div id="modalRoot" class="modal-wrap" aria-hidden="true"></div>
-    <input id="fileIn" type="file" accept="application/json" style="display:none" />
+  <main id="menuList">
+    <!-- Lista gerada via JS -->
+  </main>
+</div>
 
-    <script>
+<!-- BARRA DE ADMINISTRAÇÃO FIXA -->
+<div class="admin-bar" id="adminBar">
+  <div style="display:flex; align-items:center; gap:10px;">
+    <div style="background:var(--success);width:8px;height:8px;border-radius:50%"></div>
+    <span style="font-size:12px; color:var(--text-muted); font-weight:bold; line-height:1.2">MODO<br>ADMIN</span>
+    <div style="height:30px; width:1px; background:rgba(255,255,255,0.1); margin-left:8px;"></div>
+  </div>
+  <div class="admin-actions">
+    <button class="btn btn-primary" onclick="openAddModal()">
+      <span>+</span> Novo Item
+    </button>
+    <button class="btn btn-outline" onclick="addNewCategory()">Nova Seção</button>
+    <button class="btn btn-outline" onclick="exportData()">Backup</button>
+    <button class="btn btn-danger" onclick="toggleAdmin(false)">Sair</button>
+  </div>
+</div>
 
-        const LS_KEY = 'cardapio_brisa_v1';
-        const ADMIN_HASH_KEY = 'cardapio_brisa_admin_hash';
-        const DEFAULT_HASH = '04440fb3544b19f7b83a8a1368a59d1b34a677382d8910c4efa05e1bfcd56c54';
+<!-- MODAL GERAL (Backdrop) -->
+<div id="modalOverlay" class="modal-backdrop">
+  <div class="modal" id="modalContent">
+    <!-- Conteúdo injetado via JS -->
+  </div>
+</div>
 
-        const uid = (n = 8) => 'id_' + Math.random().toString(36).slice(2, 2 + n);
-        const listEl = document.getElementById('list');
-        const qInput = document.getElementById('q');
-        const logo = document.getElementById('logo');
-        const modalRoot = document.getElementById('modalRoot');
-        const fileIn = document.getElementById('fileIn');
+<script>
+/**
+ * BRISA LOUNGE BAR - CARDÁPIO DIGITAL
+ * Versão Revisada & Corrigida
+ */
 
-        let state = loadState() || seedData();
-        let isAdmin = false;
+// --- DADOS INICIAIS (Baseado no PDF fornecido) ---
+const INITIAL_DATA = {
+  categories: [
+    {
+      id: 'cat_drinks', name: 'Drinks Brisa', items: [
+        { id: 'dk1', name: 'Caipirinha de Cachaça (300ml)', price: 15.00, desc: 'Escolha: Morango ou Limão.' },
+        { id: 'dk2', name: 'Caipirinha de Vodka/Saquê (300ml)', price: 20.00, desc: 'Escolha: Morango ou Limão.' },
+        { id: 'dk3', name: 'Caipirinha Gourmet Brisa', price: 35.00, desc: 'Especial da casa. Escolha: Morango ou Limão.' },
+        { id: 'dk4', name: 'Gin Eternity (500ml)', price: 10.00, desc: 'Sabores: Melancia, Tropical, Maçã Verde ou Royale.' },
+        { id: 'dk5', name: 'Gin Eternity (700ml)', price: 15.00, desc: 'Sabores: Melancia, Tropical, Maçã Verde ou Royale.' },
+        { id: 'dk6', name: 'Gin Premium & Red Bull', price: 30.00, desc: 'Com fruta. Escolha: Melancia ou Tropical.' },
+        { id: 'dk7', name: 'Copão Premium & Red Bull', price: 40.00, desc: 'Copo grande com fruta. Escolha: Melancia ou Tropical.' },
+        { id: 'dk8', name: 'Moscow Mule Tradicional', price: 30.00, desc: 'Vodka, ginger beer, limão e espuma.' }
+      ]
+    },
+    {
+      id: 'cat_combos', name: 'Combos & Garrafas', items: [
+        { id: 'cb1', name: 'Jack Daniel\'s Tradicional', price: 280.00, desc: 'Garrafa + 4 Gelos de Sabor + 4 Red Bull.' },
+        { id: 'cb2', name: 'Jack Daniel\'s Sabores', price: 300.00, desc: 'Garrafa (Honey, Fire ou Apple) + 4 Gelos de Sabor + 4 Red Bull.' },
+        { id: 'cb3', name: 'Chivas 12 Anos', price: 250.00, desc: 'Garrafa + 4 Gelos de Sabor + 4 Red Bull.' },
+        { id: 'cb4', name: 'Black Label', price: 320.00, desc: 'Garrafa + 4 Gelos de Sabor + 4 Red Bull.' },
+        { id: 'cb5', name: 'White Horse', price: 200.00, desc: 'Garrafa + 4 Gelos de Sabor + 4 Red Bull.' },
+        { id: 'cb6', name: 'Gin Tanqueray', price: 250.00, desc: 'Garrafa + Frutas + 4 Red Bull ou 5 Tônicas.' },
+        { id: 'cb7', name: 'Ciroc Tradicional', price: 320.00, desc: 'Garrafa + 4 Gelos de Sabor + 4 Red Bull.' },
+        { id: 'cb8', name: 'Combo Malibu', price: 120.00, desc: 'Garrafa. Observação: Energético Bally.' }
+      ]
+    },
+    {
+      id: 'cat_doses', name: 'Doses & Bebidas', items: [
+        { id: 'ds1', name: 'Malibu (Dose)', price: 30.00, desc: '' },
+        { id: 'ds2', name: 'Smirnoff + Energético', price: 20.00, desc: 'Observação: Energético Bally.' },
+        { id: 'ds3', name: 'Absolut + Red Bull', price: 40.00, desc: '' },
+        { id: 'ds4', name: 'White Horse + Energético', price: 25.00, desc: 'Observação: Energético Bally.' },
+        { id: 'ds5', name: 'Red Label + Energético', price: 30.00, desc: 'Observação: Energético Bally.' },
+        { id: 'ds6', name: 'Jack Daniel\'s + Red Bull', price: 50.00, desc: '' },
+        { id: 'ds7', name: 'Jack Daniel\'s Maçã Verde + Red Bull', price: 55.00, desc: '' },
+        { id: 'ds8', name: 'Licor 43 (Dose)', price: 18.00, desc: '' },
+        { id: 'ds9', name: 'Licor Ballena (Dose)', price: 18.00, desc: '' },
+        { id: 'ds10', name: 'Tequila José Cuervo (Dose)', price: 18.00, desc: '' },
+        { id: 'ds11', name: 'Jack Daniel\'s (Dose)', price: 30.00, desc: '' }
+      ]
+    },
+    {
+      id: 'cat_beers', name: 'Cervejas & Long Necks', items: [
+        { id: 'br1', name: 'Original (600ml)', price: 15.00, desc: 'Garrafa gelada.' },
+        { id: 'br2', name: 'Spaten (600ml)', price: 17.00, desc: 'Puro malte.' },
+        { id: 'br3', name: 'Heineken (600ml)', price: 19.00, desc: 'Premium.' },
+        { id: 'br4', name: 'Balde Original (4 un)', price: 56.00, desc: '4 Garrafas de 600ml.' },
+        { id: 'br5', name: 'Balde Spaten (4 un)', price: 64.00, desc: '4 Garrafas de 600ml.' },
+        { id: 'br6', name: 'Balde Heineken (4 un)', price: 72.00, desc: '4 Garrafas de 600ml.' },
+        { id: 'br7', name: 'Budweiser (Long Neck)', price: 8.00, desc: '' },
+        { id: 'br8', name: 'Spaten (Long Neck)', price: 10.00, desc: '' },
+        { id: 'br9', name: 'Corona (Long Neck)', price: 12.00, desc: '' },
+        { id: 'br10', name: 'Heineken (Long Neck)', price: 12.00, desc: '' },
+        { id: 'br11', name: 'Heineken 0% (Long Neck)', price: 12.00, desc: 'Sem álcool.' },
+        { id: 'br12', name: 'Skol Beats', price: 12.00, desc: '' },
+        { id: 'br13', name: 'Smirnoff Ice', price: 12.00, desc: '' },
+        { id: 'br14', name: 'Balde Heineken Long (10 un)', price: 110.00, desc: '10 unidades no gelo.' }
+      ]
+    },
+    {
+      id: 'cat_misc', name: 'Diversos', items: [
+        { id: 'm1', name: 'Água (Com ou Sem Gás)', price: 5.00, desc: '' },
+        { id: 'm2', name: 'Água Tônica', price: 6.00, desc: '' },
+        { id: 'm3', name: 'Refrigerante / Suco (Lata)', price: 6.00, desc: 'Coca, Guaraná, Sprite, Fanta, Del Valle.' },
+        { id: 'm4', name: 'Red Bull Sabores', price: 12.00, desc: '' },
+        { id: 'm5', name: 'Halls / Trident', price: 3.00, desc: '' },
+        { id: 'm6', name: 'Gelo (Adicional/Copo)', price: 3.50, desc: '' },
+        { id: 'm7', name: 'Snickers', price: 6.00, desc: '' }
+      ]
+    },
+    {
+      id: 'cat_hookah', name: 'Narguilé', items: [
+        { id: 'hk1', name: 'Rosh (Refil de Essência)', price: 15.00, desc: 'Sessão.' },
+        { id: 'hk2', name: 'Aluguel do Narguilé', price: 5.00, desc: 'Taxa cobrada no primeiro uso/aluguel do equipamento.' }
+      ]
+    },
+    {
+      id: 'cat_food', name: 'Porções, Caldos & Tábuas', items: [
+        { id: 'fd1', name: 'Batata com Cheddar e Bacon', price: 35.00, desc: '' },
+        { id: 'fd2', name: 'Onion Rings', price: 30.00, desc: 'Anéis de cebola empanados.' },
+        { id: 'fd3', name: 'Salgados Fritos', price: 25.00, desc: 'Coxinha, bolinha de queijo, etc.' },
+        { id: 'fd4', name: 'Calabresa Acebolada', price: 25.00, desc: '' },
+        { id: 'fd5', name: 'Porção Mista', price: 40.00, desc: 'Escolha 2 itens (Exceto Peixe).' },
+        { id: 'fd6', name: 'Isca de Peixe', price: 60.00, desc: 'Acompanha molho tártaro.' },
+        { id: 'fd7', name: 'Frango a Passarinho', price: 35.00, desc: 'Bem temperado.' },
+        { id: 'fd8', name: 'Porção Completa', price: 120.00, desc: 'Acompanha isca de peixe + 2 opções à sua escolha.' },
+        { id: 'fd9', name: 'Caldo Verde (500ml)', price: 18.00, desc: '' },
+        { id: 'fd10', name: 'Caldo de Feijão (500ml)', price: 18.00, desc: '' },
+        { id: 'fd11', name: 'Caldo de Mocotó (500ml)', price: 20.00, desc: '' },
+        { id: 'fd12', name: 'Abóbora com Carne Seca (500ml)', price: 20.00, desc: '' },
+        { id: 'fd13', name: 'Tábua Picanha com Batata', price: 100.00, desc: 'Aprox 600g de Picanha + Molho da casa, barbecue, vinagrete e farofa.' },
+        { id: 'fd14', name: 'Tábua Linguiça com Aligot', price: 70.00, desc: 'Aprox 500g de Linguiça + Molho da casa, vinagrete e farofa.' }
+      ]
+    }
+  ]
+};
 
-        function render() {
-            listEl.innerHTML = '';
-            const q = qInput.value.trim().toLowerCase();
+// --- ESTADO & PERSISTÊNCIA ---
+const LS_KEY = 'brisa_menu_v3'; // Chave atualizada para v3
+let data = loadData();
+let isAdmin = false;
 
-            state.categories.forEach(cat => {
-                const catMatch = cat.name.toLowerCase().includes(q);
-                const filtered = cat.items.filter(it => {
-                    if (!q) return true;
-                    return it.name.toLowerCase().includes(q) || (it.notes || '').toLowerCase().includes(q) || (it.ingredients || []).join(' ').toLowerCase().includes(q);
-                });
-                if (!catMatch && filtered.length === 0) return;
+function loadData() {
+  try {
+    const saved = localStorage.getItem(LS_KEY);
+    return saved ? JSON.parse(saved) : INITIAL_DATA;
+  } catch(e) {
+    return INITIAL_DATA;
+  }
+}
 
-                const sec = document.createElement('section'); sec.className = 'cat';
-                const head = document.createElement('div'); head.className = 'cat-head';
-                const left = document.createElement('div'); left.innerHTML = `<div class="cat-name">${escapeHtml(cat.name)}</div><div class="cat-meta">${cat.items.length} itens</div>`;
-                head.appendChild(left);
+function saveData() {
+  localStorage.setItem(LS_KEY, JSON.stringify(data));
+  renderMenu();
+}
 
-                if (isAdmin) {
-                    const right = document.createElement('div'); right.style.display = 'flex'; right.style.gap = '8px';
-                    const ed = mkBtn('editar', () => openCatEdit(cat.id));
-                    const rm = mkBtn('remover', () => removeCategory(cat.id));
-                    right.appendChild(ed); right.appendChild(rm);
-                    head.appendChild(right);
-                }
+function exportData() {
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type : 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `brisa_backup_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.json`;
+  a.click();
+}
 
-                sec.appendChild(head);
+// --- RENDERIZAÇÃO ---
+const menuListEl = document.getElementById('menuList');
+const searchInput = document.getElementById('searchInput');
 
-                const itemsWrap = document.createElement('div'); itemsWrap.className = 'items';
-                filtered.forEach(it => {
-                    const itemEl = document.createElement('div'); itemEl.className = 'item'; itemEl.tabIndex = 0;
-                    itemEl.addEventListener('click', () => openItemModal(cat.id, it.id));
+function formatCurrency(val) {
+  if (val === undefined || val === null) return 'R$ 0,00';
+  return Number(val).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
 
-                    const leftIt = document.createElement('div'); leftIt.className = 'item-left';
-                    leftIt.innerHTML = `<div class="iname">${escapeHtml(it.name)}</div>` + (it.notes ? `<div class="inote">${escapeHtml(it.notes)}</div>` : '');
+function renderMenu() {
+  menuListEl.innerHTML = '';
+  const term = searchInput.value.toLowerCase();
+  let hasContent = false;
 
-                    const rightIt = document.createElement('div'); rightIt.style.display = 'flex'; rightIt.style.alignItems = 'center'; rightIt.style.gap = '8px';
-                    const price = document.createElement('div'); price.className = 'price'; price.textContent = formatBRL(it.price);
-                    rightIt.appendChild(price);
+  data.categories.forEach(cat => {
+    // Filtra itens
+    const filteredItems = cat.items.filter(item => 
+      item.name.toLowerCase().includes(term) || 
+      (item.desc && item.desc.toLowerCase().includes(term))
+    );
 
-                    if (isAdmin) {
-                        const e = mkBtn('✎', () => openItemEdit(cat.id, it.id));
-                        const d = mkBtn('🗑', () => removeItem(cat.id, it.id));
-                        rightIt.appendChild(e); rightIt.appendChild(d);
-                    }
+    if (filteredItems.length === 0) return;
+    hasContent = true;
 
-                    itemEl.appendChild(leftIt);
-                    itemEl.appendChild(rightIt);
-                    itemsWrap.appendChild(itemEl);
-                });
+    // Cria seção
+    const section = document.createElement('section');
+    section.className = 'category-section';
+    
+    // Header da Seção
+    const header = document.createElement('div');
+    header.className = 'cat-header';
+    header.innerHTML = `
+      <div>
+        <h2 class="cat-title">${cat.name}</h2>
+        <span class="cat-count">${filteredItems.length} opções</span>
+      </div>
+      ${isAdmin ? `
+        <div class="admin-card-actions" style="position:static; display:flex; background:transparent;">
+           <button class="btn btn-icon" style="border-color:var(--danger); color:var(--danger)" onclick="deleteCategory('${cat.id}')">🗑</button>
+        </div>
+      ` : ''}
+    `;
+    section.appendChild(header);
 
-                sec.appendChild(itemsWrap);
-                listEl.appendChild(sec);
-            });
+    // Itens
+    filteredItems.forEach(item => {
+      const card = document.createElement('article');
+      card.className = 'item-card';
+      // Clique no card abre modal de detalhes
+      card.onclick = (e) => {
+        if(e.target.closest('button')) return; // Ignora clique se for nos botões de admin
+        openItemModal(item);
+      };
 
-            toggleAdminUI(isAdmin);
-        }
+      card.innerHTML = `
+        <div class="item-content">
+          <div class="item-name">${item.name}</div>
+          <div class="item-desc">${item.desc || 'Toque para ver detalhes'}</div>
+        </div>
+        <div class="item-price">${formatCurrency(item.price)}</div>
+        
+        ${isAdmin ? `
+          <div class="admin-card-actions">
+            <button class="btn btn-icon" onclick="openEditModal('${cat.id}', '${item.id}')">✎</button>
+            <button class="btn btn-icon" style="border-color:var(--danger); color:var(--danger)" onclick="deleteItem('${cat.id}', '${item.id}')">✕</button>
+          </div>
+        ` : ''}
+      `;
+      section.appendChild(card);
+    });
 
-        function mkBtn(label, onClick) {
-            const b = document.createElement('button'); b.className = 'btn'; b.textContent = label;
-            b.addEventListener('click', (e) => { e.stopPropagation(); onClick(); });
-            return b;
-        }
-        function escapeHtml(s) { if (!s) return ''; return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
-        function formatBRL(v) { if (v === undefined || v === '') return ''; return Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+    menuListEl.appendChild(section);
+  });
 
-        function seedData() {
-            return {
-                updatedAt: new Date().toISOString(),
-                categories: [
-                    {
-                        id: uid(), name: 'Drinks — Caipirinhas & Gin', items: [
-                            { id: uid(), name: 'Caipirinha de cachaça (300ml)', price: 15.00, notes: 'Escolha: morango ou limão', ingredients: ['cachaça', 'fruta (morango ou limão)', 'açúcar', 'gelo'] },
-                            { id: uid(), name: 'Caipirinha de vodka/saquê (300ml)', price: 20.00, notes: 'Escolha: morango ou limão', ingredients: ['vodka/saquê', 'fruta (morango ou limão)', 'açúcar', 'gelo'] },
-                            { id: uid(), name: 'Caipirinha Gourmet Brisa (300ml)', price: 35.00, notes: 'Morango ou limão (versão premium)', ingredients: ['cachaça premium', 'fruta', 'açúcar', 'gelo', 'toque gourmet'] },
-                            { id: uid(), name: 'Gin Eternity (500ml)', price: 10.00, notes: 'Sabores: melancia, tropical, maçã verde ou royale', ingredients: ['gin', 'fruta (melancia/tropical/maçã verde/royale)', 'gelo'] },
-                            { id: uid(), name: 'Gin Eternity (700ml)', price: 15.00, notes: 'Sabores: melancia, tropical, maçã verde ou royale', ingredients: ['gin', 'fruta', 'gelo'] },
-                            { id: uid(), name: 'Gin Premium & Red Bull', price: 30.00, notes: 'Com fruta (melancia ou tropical)', ingredients: ['gin premium', 'Red Bull', 'gelo', 'fruta'] },
-                            { id: uid(), name: 'Copão Premium & Red Bull', price: 40.00, notes: 'Com fruta (melancia ou tropical)', ingredients: ['gin premium/copo grande', 'Red Bull', 'gelo', 'fruta'] },
-                            { id: uid(), name: 'Moscow Mule (tradicional)', price: 30.00, ingredients: ['vodka', 'ginger beer', 'limão', 'gelo'] }
-                        ]
-                    },
-                    {
-                        id: uid(), name: 'Combos & Garrafas', items: [
-                            { id: uid(), name: "Combo Cavalo Branco / Passport / Smirnoff (garrafa + 4 RB + gelo de sabor)", price: 160.00, ingredients: ['garrafa', '4 Red Bull', 'gelo de sabor'] },
-                            { id: uid(), name: "Ballantine's / Red Label (garrafa + 4 RB + gelo)", price: 200.00, ingredients: ['garrafa', '4 Red Bull', 'gelo de sabor'] },
-                            { id: uid(), name: "Jack Daniel's (Trad., Apple, Honey, Fire) (garrafa + 4 RB + gelo)", price: 280.00, ingredients: ['garrafa', '4 Red Bull', 'gelo de sabor'] },
-                            { id: uid(), name: "Old Parr / Black Label (garrafa + 4 RB + gelo)", price: 320.00, ingredients: ['garrafa', '4 Red Bull', 'gelo de sabor'] },
-                            { id: uid(), name: "Ciroc / Grey Goose (garrafa + 4 RB + gelo)", price: 320.00, ingredients: ['garrafa', '4 Red Bull', 'gelo de sabor'] },
-                            { id: uid(), name: "Gin Tanqueray / Beefeater (garrafa + frutas + 4 RB ou 5 tônicas)", price: 250.00, ingredients: ['garrafa de gin', 'frutas', '4 Red Bull ou 5 tônicas'] }
-                        ]
-                    },
-                    {
-                        id: uid(), name: 'Doses & Mix', items: [
-                            { id: uid(), name: 'Licor 43 (dose)', price: 18.00, ingredients: ['Licor 43'] },
-                            { id: uid(), name: "Ballantine's (dose)", price: 18.00, ingredients: ["Ballantine's"] },
-                            { id: uid(), name: 'Tequila (José Cuervo) (dose)', price: 18.00, ingredients: ['tequila José Cuervo'] },
-                            { id: uid(), name: 'Jack (dose)', price: 30.00, ingredients: ['Jack Daniel\'s'] },
-                            { id: uid(), name: 'Chivas 12 anos (garrafa + 4 RB + gelo)', price: 250.00, ingredients: ['garrafa', '4 Red Bull', 'gelo de sabor'] },
-                            { id: uid(), name: 'Jack Daniel\'s sabores (garrafa + 4 RB + gelo)', price: 300.00, ingredients: ['garrafa', '4 Red Bull', 'gelo de sabor'] },
-                            { id: uid(), name: 'Malibu (dose)', price: 30.00, ingredients: ['Malibu', 'energetico (observação: energético Bally)'] }
-                        ]
-                    },
-                    {
-                        id: uid(), name: 'Cervejas & Baldes', items: [
-                            { id: uid(), name: 'Original (600ml)', price: 15.00, ingredients: ['cerveja Original 600ml'] },
-                            { id: uid(), name: 'Spaten (600ml)', price: 17.00, ingredients: ['Spaten 600ml'] },
-                            { id: uid(), name: 'Heineken (600ml)', price: 19.00, ingredients: ['Heineken 600ml'] },
-                            { id: uid(), name: 'Balde Original (4 x 600ml)', price: 56.00, ingredients: ['4 garrafas Original', 'gelo'] },
-                            { id: uid(), name: 'Balde Spaten (4 x 600ml)', price: 64.00, ingredients: ['4 garrafas Spaten', 'gelo'] },
-                            { id: uid(), name: 'Balde Heineken (4 x 600ml)', price: 72.00, ingredients: ['4 garrafas Heineken', 'gelo'] }
-                        ]
-                    },
-                    {
-                        id: uid(), name: 'Long Neck e Diversos', items: [
-                            { id: uid(), name: 'Budweiser (long neck)', price: 8.00, ingredients: ['Budweiser long neck'] },
-                            { id: uid(), name: 'Spaten (long neck)', price: 10.00, ingredients: ['Spaten long neck'] },
-                            { id: uid(), name: 'Corona / Heineken / Heineken 0% (long neck)', price: 12.00, ingredients: ['Corona / Heineken / Heineken 0%'] },
-                            { id: uid(), name: 'Skol Beats / Smirnoff Ice', price: 12.00, ingredients: ['Skol Beats ou Smirnoff Ice'] },
-                            { id: uid(), name: 'Balde Heineken Long Neck (10 un)', price: 110.00, ingredients: ['10 long neck Heineken', 'gelo'] }
-                        ]
-                    },
-                    {
-                        id: uid(), name: 'Bebidas não alcoólicas', items: [
-                            { id: uid(), name: 'Refrigerante ou suco (lata)', price: 6.00, ingredients: ['Coca-Cola / Guaraná / Sprite / Fanta / Del Valle'] },
-                            { id: uid(), name: 'Água (com ou sem gás)', price: 5.00, ingredients: ['Água com ou sem gás'] },
-                            { id: uid(), name: 'Água tônica', price: 6.00, ingredients: ['água tônica'] },
-                            { id: uid(), name: 'Red Bull (sabores)', price: 12.00, ingredients: ['Red Bull (sabores)'] },
-                            { id: uid(), name: 'Gelo de sabor', price: 3.00, ingredients: ['gelo de sabor'] },
-                            { id: uid(), name: 'Halls / Trident', price: 3.50, ingredients: ['Halls / Trident'] },
-                            { id: uid(), name: 'Snickers', price: 6.00, ingredients: ['Snickers'] }
-                        ]
-                    },
-                    {
-                        id: uid(), name: 'Narguilé', items: [
-                            { id: uid(), name: 'Narguilé Rosh', price: 15.00, ingredients: ['corpo Rosh (refil de fumo)'] },
-                            { id: uid(), name: 'Aluguel de narguilé', price: 40.00, notes: 'Cobramos R$5,00 no primeiro aluguel', ingredients: ['base narguilé', 'mangueira', 'prato', 'carvão'] }
-                        ]
-                    },
-                    {
-                        id: uid(), name: 'Porções & Petiscos', items: [
-                            { id: uid(), name: 'Batata com cheddar e bacon', price: 35.00, ingredients: ['batata frita', 'cheddar', 'bacon'] },
-                            { id: uid(), name: 'Frango à passarinho', price: 35.00, ingredients: ['pedaços de frango', 'temperos', 'limão'] },
-                            { id: uid(), name: 'Isca de frango', price: 45.00, ingredients: ['tirinhas de frango empanadas', 'molho'] },
-                            { id: uid(), name: 'Isca de peixe', price: 60.00, ingredients: ['filé de peixe empanado', 'molho'] },
-                            { id: uid(), name: 'Calabresa com acebolada', price: 30.00, ingredients: ['calabresa', 'cebola', 'temperos'] },
-                            { id: uid(), name: 'Onion rings', price: 25.00, ingredients: ['anéis de cebola empanados'] },
-                            { id: uid(), name: 'Salgados fritos', price: 25.00, ingredients: ['coxinha', 'risoles', 'pastel (variedade)'] },
-                            { id: uid(), name: 'Porção mista', price: 40.00, notes: 'Escolha 2 itens (exceto peixe)', ingredients: ['escolha 2 itens da lista (sem peixe)'] }
-                        ]
-                    },
-                    {
-                        id: uid(), name: 'Caldos & Pratos', items: [
-                            { id: uid(), name: 'Caldo verde', price: 18.00, ingredients: ['couve', 'batata', 'caldo temperado'] },
-                            { id: uid(), name: 'Caldo de feijão', price: 18.00, ingredients: ['feijão', 'temperos'] },
-                            { id: uid(), name: 'Mocotó', price: 20.00, ingredients: ['mocotó', 'temperos'] },
-                            { id: uid(), name: 'Abóbora com carne seca', price: 20.00, ingredients: ['abóbora', 'carne seca'] },
-                            { id: uid(), name: 'Porção completa', price: 120.00, notes: 'Acompanha isca de peixe + mais 2 opções', ingredients: ['isca de peixe', '2 porções à escolha'] }
-                        ]
-                    },
-                    {
-                        id: uid(), name: 'Tábuas', items: [
-                            { id: uid(), name: 'Tábua Brisa — picanha com batata (≈600g)', price: 100.00, notes: 'Acompanha molhos, farofa e vinagrete', ingredients: ['picanha', 'batata', 'molhos', 'farofa', 'vinagrete'] },
-                            { id: uid(), name: 'Tábua — linguiça com aligot (≈500g)', price: 70.00, notes: 'Aprox. 500g — acompanha vinagrete e farofa', ingredients: ['linguiça', 'aligot', 'molhos', 'farofa'] }
-                        ]
-                    }
-                ]
-            };
-        }
+  if (!hasContent) {
+    menuListEl.innerHTML = `<div class="empty-state">Nenhum item encontrado para "${searchInput.value}"</div>`;
+  }
+}
 
-        function loadState() {
-            try { const raw = localStorage.getItem(LS_KEY); if (!raw) return null; return JSON.parse(raw); } catch (e) { console.warn('load error', e); return null; }
-        }
-        function saveState() { state.updatedAt = new Date().toISOString(); localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+searchInput.addEventListener('input', renderMenu);
 
-        async function sha256(str) {
-            const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-        function getStoredAdminHash() { return localStorage.getItem(ADMIN_HASH_KEY) || DEFAULT_HASH; }
-        async function checkPassword(pw) { const h = await sha256(pw || ''); return h === getStoredAdminHash(); }
-        function setAdminHash(hash) { localStorage.setItem(ADMIN_HASH_KEY, hash); }
+// --- MODALS (Visualização & Edição) ---
+const modalOverlay = document.getElementById('modalOverlay');
+const modalContent = document.getElementById('modalContent');
 
-        let tapCount = 0, lastTap = 0, longpressTimer = null;
-        logo.addEventListener('touchstart', startLong); logo.addEventListener('mousedown', startLong);
-        logo.addEventListener('touchend', endLong); logo.addEventListener('mouseup', endLong);
-        logo.addEventListener('click', () => {
-            const t = Date.now();
-            if (t - lastTap < 700) tapCount++; else tapCount = 1;
-            lastTap = t;
-            if (tapCount >= 7) { promptAdmin(); tapCount = 0; }
-        });
-        function startLong(e) { e.preventDefault && e.preventDefault(); longpressTimer = setTimeout(() => promptAdmin(), 1200); }
-        function endLong() { if (longpressTimer) { clearTimeout(longpressTimer); longpressTimer = null; } }
-        async function promptAdmin() {
-            const pw = prompt('Área interna — senha:');
-            if (pw === null) return;
-            const ok = await checkPassword(pw);
-            if (ok) { isAdmin = true; render(); alert('Área interna liberada'); }
-            else alert('Senha incorreta');
-        }
+function closeModal() {
+  modalOverlay.classList.remove('active');
+  // Limpa o conteúdo após a animação de saída (300ms)
+  setTimeout(() => { modalContent.innerHTML = ''; }, 300);
+}
 
-        function toggleAdminUI(enable) {
-            const adminEls = document.querySelectorAll('.admin');
-            adminEls.forEach(el => {
-                if (enable) {
-                    el.removeAttribute('aria-hidden'); el.removeAttribute('hidden');
-                    const controls = el.querySelectorAll('button,input,select,textarea');
-                    controls.forEach(c => { c.removeAttribute('tabindex'); c.removeAttribute('aria-hidden'); c.disabled = false; });
-                } else {
-                    el.setAttribute('aria-hidden', 'true'); el.setAttribute('hidden', '');
-                    const controls = el.querySelectorAll('button,input,select,textarea');
-                    controls.forEach(c => { c.setAttribute('tabindex', '-1'); c.setAttribute('aria-hidden', 'true'); c.disabled = true; });
-                }
-            });
-            document.body.classList.toggle('is-admin', enable);
-        }
+// Fechar ao clicar fora
+modalOverlay.addEventListener('click', (e) => {
+  if (e.target === modalOverlay) closeModal();
+});
 
-        function openModal(element) {
-            modalRoot.innerHTML = ''; modalRoot.classList.add('show'); modalRoot.appendChild(element);
-            modalRoot.addEventListener('click', onBackdrop); modalRoot.setAttribute('aria-hidden', 'false');
-        }
-        function closeModal() { modalRoot.removeEventListener('click', onBackdrop); modalRoot.innerHTML = ''; modalRoot.classList.remove('show'); modalRoot.setAttribute('aria-hidden', 'true'); }
-        function onBackdrop(e) { if (e.target === modalRoot) closeModal(); }
+function openItemModal(item) {
+  modalContent.innerHTML = `
+    <div class="modal-header">
+      <h3 class="modal-title">Detalhes do Item</h3>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <h2 style="color:var(--gold); margin-top:0; line-height:1.2; font-family:var(--font-display)">${item.name}</h2>
+      <p style="color:var(--text-muted); font-size:16px; line-height:1.5; margin-bottom:20px;">
+        ${item.desc || 'Sem descrição adicional.'}
+      </p>
+      <div style="height:1px; background:rgba(255,255,255,0.1); margin:10px 0;"></div>
+      <div class="modal-price-big">${formatCurrency(item.price)}</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" style="width:100%; justify-content:center" onclick="closeModal()">Voltar ao Menu</button>
+    </div>
+  `;
+  modalOverlay.classList.add('active');
+}
 
-        function openItemModal(catId, itemId) {
-            const cat = state.categories.find(c => c.id === catId); if (!cat) return;
-            const it = cat.items.find(i => i.id === itemId); if (!it) return;
+// --- LÓGICA DE ADMIN (CRUD) ---
 
-            const wrap = document.createElement('div'); wrap.className = 'modal';
-            wrap.innerHTML = `<h3>${escapeHtml(it.name)}</h3>`;
-            const meta = document.createElement('div'); meta.className = 'frow';
-            const price = document.createElement('div'); price.style.fontWeight = '800'; price.textContent = formatBRL(it.price);
-            meta.appendChild(price);
-            if (it.notes) { const n = document.createElement('div'); n.style.color = 'var(--muted)'; n.textContent = it.notes; meta.appendChild(n); }
-            wrap.appendChild(meta);
+// Abrir modal de EDIÇÃO ou CRIAÇÃO
+function openEditModal(catId, itemId = null) {
+  const category = data.categories.find(c => c.id === catId);
+  if (!category) return;
 
-            if (it.ingredients && it.ingredients.length) {
-                const ingWrap = document.createElement('div'); ingWrap.className = 'modal-ingredients';
-                const title = document.createElement('div'); title.style.fontWeight = '700'; title.style.marginTop = '6px'; title.textContent = 'Ingredientes';
-                ingWrap.appendChild(title);
-                it.ingredients.forEach(name => {
-                    const row = document.createElement('div'); row.className = 'ingredient';
-                    const dot = document.createElement('div'); dot.className = 'dot';
-                    const txt = document.createElement('div'); txt.textContent = name;
-                    row.appendChild(dot); row.appendChild(txt);
-                    ingWrap.appendChild(row);
-                });
-                wrap.appendChild(ingWrap);
-            }
+  const isNew = !itemId;
+  // Se for novo, cria objeto vazio. Se for edição, clona o item existente.
+  const item = itemId 
+    ? { ...category.items.find(i => i.id === itemId) } 
+    : { name:'', price:'', desc:'' };
 
-            const actions = document.createElement('div'); actions.className = 'modal-actions';
-            const closeBtn = document.createElement('button'); closeBtn.className = 'btn primary'; closeBtn.textContent = 'Fechar'; closeBtn.onclick = () => closeModal();
-            actions.appendChild(closeBtn);
-            if (isAdmin) {
-                const editBtn = document.createElement('button'); editBtn.className = 'btn'; editBtn.textContent = 'Editar'; editBtn.onclick = () => { closeModal(); openItemEdit(catId, itemId); };
-                actions.appendChild(editBtn);
-            }
-            wrap.appendChild(actions);
+  modalContent.innerHTML = `
+    <div class="modal-header">
+      <h3 class="modal-title">${isNew ? 'Novo Item' : 'Editar Item'}</h3>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Nome do Item</label>
+        <input type="text" id="inpName" class="form-input" value="${item.name}" placeholder="Ex: Gin Tônica">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Preço (R$)</label>
+        <input type="number" id="inpPrice" class="form-input" value="${item.price}" placeholder="0.00" step="0.50">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Descrição / Ingredientes</label>
+        <textarea id="inpDesc" class="form-textarea" rows="4" placeholder="Ex: Acompanha gelo de sabor...">${item.desc || ''}</textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveItem('${catId}', '${itemId || ''}')">Salvar Alterações</button>
+    </div>
+  `;
+  modalOverlay.classList.add('active');
+}
 
-            openModal(wrap);
-        }
+function openAddModal() {
+  if (data.categories.length === 0) {
+    alert("Crie uma seção primeiro!");
+    return;
+  }
+  
+  // Modal para escolher categoria antes de criar item
+  let catOptions = data.categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+  
+  modalContent.innerHTML = `
+    <div class="modal-header">
+      <h3 class="modal-title">Adicionar onde?</h3>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Selecione a Categoria</label>
+        <select id="selCat" class="form-select">${catOptions}</select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" style="width:100%; justify-content:center" onclick="goToCreateItem()">Continuar</button>
+    </div>
+  `;
+  modalOverlay.classList.add('active');
+}
 
-        function addCategory(name) {
-            state.categories.push({ id: uid(), name: name || 'Nova seção', items: [] }); saveState(); render();
-        }
-        function editCategory(id, name) { const c = state.categories.find(x => x.id === id); if (c) c.name = name; saveState(); render(); }
-        function removeCategory(id) { if (!confirm('Remover esta seção?')) return; state.categories = state.categories.filter(c => c.id !== id); saveState(); render(); }
+function goToCreateItem() {
+  const catId = document.getElementById('selCat').value;
+  closeModal(); // Fecha o modal de seleção
+  setTimeout(() => openEditModal(catId), 300); // Abre o de criação
+}
 
-        function addItem(catId, payload) { const c = state.categories.find(x => x.id === catId); if (!c) return; c.items.push({ id: uid(), name: payload.name, price: Number(payload.price) || 0, notes: payload.notes || '', ingredients: payload.ingredients || [] }); saveState(); render(); }
-        function editItem(catId, itemId, payload) { const c = state.categories.find(x => x.id === catId); if (!c) return; const it = c.items.find(i => i.id === itemId); if (!it) return; it.name = payload.name; it.price = Number(payload.price) || 0; it.notes = payload.notes || ''; it.ingredients = payload.ingredients || []; saveState(); render(); }
-        function removeItem(catId, itemId) { if (!confirm('Remover este item?')) return; const c = state.categories.find(x => x.id === catId); if (!c) return; c.items = c.items.filter(i => i.id !== itemId); saveState(); render(); }
+function saveItem(catId, itemId) {
+  const name = document.getElementById('inpName').value.trim();
+  const priceVal = document.getElementById('inpPrice').value;
+  const price = priceVal ? parseFloat(priceVal) : 0;
+  const desc = document.getElementById('inpDesc').value.trim();
 
-        function addCategoryModal() {
-            const box = document.createElement('div'); box.className = 'modal';
-            box.innerHTML = `<h3>Criar seção</h3>`;
-            const f = document.createElement('div'); f.className = 'frow';
-            const inp = document.createElement('input'); inp.className = 'input'; inp.placeholder = 'Nome da seção';
-            f.appendChild(inp); box.appendChild(f);
-            const actions = document.createElement('div'); actions.className = 'modal-actions';
-            const c = document.createElement('button'); c.className = 'btn'; c.textContent = 'Cancelar'; c.onclick = closeModal;
-            const s = document.createElement('button'); s.className = 'btn primary'; s.textContent = 'Criar'; s.onclick = () => { if (!inp.value.trim()) return alert('Nome obrigatório'); addCategory(inp.value.trim()); closeModal(); };
-            actions.appendChild(c); actions.appendChild(s); box.appendChild(actions);
-            openModal(box);
-        }
+  if (!name) return alert('O nome do item é obrigatório.');
 
-        function addItemModal() {
-            if (!state.categories.length) { alert('Crie uma seção primeiro'); return; }
-            const box = document.createElement('div'); box.className = 'modal'; box.innerHTML = `<h3>Criar item</h3>`;
-            const selRow = document.createElement('div'); selRow.className = 'frow';
-            const sel = document.createElement('select'); sel.className = 'input';
-            state.categories.forEach(c => { const o = document.createElement('option'); o.value = c.id; o.textContent = c.name; sel.appendChild(o); });
-            selRow.appendChild(sel);
+  const catIndex = data.categories.findIndex(c => c.id === catId);
+  if (catIndex === -1) return;
 
-            const nameRow = document.createElement('div'); nameRow.className = 'frow'; const nameInp = document.createElement('input'); nameInp.className = 'input'; nameInp.placeholder = 'Nome do item';
-            const priceRow = document.createElement('div'); priceRow.className = 'frow'; const priceInp = document.createElement('input'); priceInp.className = 'input'; priceInp.type = 'number'; priceInp.step = '0.01'; priceInp.placeholder = 'Preço';
-            const noteRow = document.createElement('div'); noteRow.className = 'frow'; const noteInp = document.createElement('textarea'); noteInp.className = 'input'; noteInp.rows = 3; noteInp.placeholder = 'Notas (opcional)';
-            const ingRow = document.createElement('div'); ingRow.className = 'frow'; const ingInp = document.createElement('input'); ingInp.className = 'input'; ingInp.placeholder = 'Ingredientes (separar por vírgula)';
+  if (itemId) {
+    // Modo Edição
+    const itemIndex = data.categories[catIndex].items.findIndex(i => i.id === itemId);
+    if (itemIndex > -1) {
+      data.categories[catIndex].items[itemIndex] = { id: itemId, name, price, desc };
+    }
+  } else {
+    // Modo Criação
+    const newItem = {
+      id: 'it_' + Date.now() + Math.random().toString(36).substr(2, 5),
+      name, price, desc
+    };
+    data.categories[catIndex].items.push(newItem);
+  }
 
-            box.appendChild(selRow); box.appendChild(nameRow); nameRow.appendChild(nameInp);
-            box.appendChild(priceRow); priceRow.appendChild(priceInp);
-            box.appendChild(noteRow); noteRow.appendChild(noteInp);
-            box.appendChild(ingRow); ingRow.appendChild(ingInp);
+  saveData();
+  closeModal();
+}
 
-            const actions = document.createElement('div'); actions.className = 'modal-actions';
-            const cancel = document.createElement('button'); cancel.className = 'btn'; cancel.textContent = 'Cancelar'; cancel.onclick = closeModal;
-            const save = document.createElement('button'); save.className = 'btn primary'; save.textContent = 'Salvar'; save.onclick = () => {
-                if (!nameInp.value.trim()) return alert('Nome obrigatório');
-                const ingredients = ingInp.value.split(',').map(s => s.trim()).filter(Boolean);
-                addItem(sel.value, { name: nameInp.value.trim(), price: parseFloat(priceInp.value || '0'), notes: noteInp.value.trim(), ingredients });
-                closeModal();
-            };
-            actions.appendChild(cancel); actions.appendChild(save); box.appendChild(actions);
-            openModal(box);
-        }
+function deleteItem(catId, itemId) {
+  if(!confirm('Tem certeza que deseja apagar este item?')) return;
+  const cat = data.categories.find(c => c.id === catId);
+  if(cat) {
+    cat.items = cat.items.filter(i => i.id !== itemId);
+    saveData();
+  }
+}
 
-        function openCatEdit(catId) {
-            const cat = state.categories.find(c => c.id === catId); if (!cat) return;
-            const box = document.createElement('div'); box.className = 'modal'; box.innerHTML = `<h3>Editar seção</h3>`;
-            const f = document.createElement('div'); f.className = 'frow'; const inp = document.createElement('input'); inp.className = 'input'; inp.value = cat.name; f.appendChild(inp); box.appendChild(f);
-            const actions = document.createElement('div'); actions.className = 'modal-actions';
-            const cancel = document.createElement('button'); cancel.className = 'btn'; cancel.textContent = 'Cancelar'; cancel.onclick = closeModal;
-            const save = document.createElement('button'); save.className = 'btn primary'; save.textContent = 'Salvar'; save.onclick = () => { if (!inp.value.trim()) return alert('Nome obrigatório'); editCategory(catId, inp.value.trim()); closeModal(); };
-            actions.appendChild(cancel); actions.appendChild(save); box.appendChild(actions);
-            openModal(box);
-        }
+function addNewCategory() {
+  const name = prompt('Nome da nova seção (Ex: Vinhos):');
+  if(name && name.trim()) {
+    data.categories.push({ 
+      id: 'cat_' + Date.now(), 
+      name: name.trim(), 
+      items: [] 
+    });
+    saveData();
+  }
+}
 
-        function openItemEdit(catId, itemId) {
-            const cat = state.categories.find(c => c.id === catId); if (!cat) return; const it = cat.items.find(i => i.id === itemId); if (!it) return;
-            const box = document.createElement('div'); box.className = 'modal'; box.innerHTML = `<h3>Editar item</h3>`;
-            const nameRow = document.createElement('div'); nameRow.className = 'frow'; const nameInp = document.createElement('input'); nameInp.className = 'input'; nameInp.value = it.name; nameRow.appendChild(nameInp);
-            const priceRow = document.createElement('div'); priceRow.className = 'frow'; const priceInp = document.createElement('input'); priceInp.className = 'input'; priceInp.type = 'number'; priceInp.step = '0.01'; priceInp.value = it.price; priceRow.appendChild(priceInp);
-            const noteRow = document.createElement('div'); noteRow.className = 'frow'; const noteInp = document.createElement('textarea'); noteInp.className = 'input'; noteInp.rows = 3; noteInp.value = it.notes || ''; noteRow.appendChild(noteInp);
-            const ingRow = document.createElement('div'); ingRow.className = 'frow'; const ingInp = document.createElement('input'); ingInp.className = 'input'; ingInp.value = (it.ingredients || []).join(', ');
-            ingRow.appendChild(ingInp);
-            box.appendChild(nameRow); box.appendChild(priceRow); box.appendChild(noteRow); box.appendChild(ingRow);
-            const actions = document.createElement('div'); actions.className = 'modal-actions';
-            const cancel = document.createElement('button'); cancel.className = 'btn'; cancel.textContent = 'Cancelar'; cancel.onclick = closeModal;
-            const save = document.createElement('button'); save.className = 'btn primary'; save.textContent = 'Salvar'; save.onclick = () => {
-                if (!nameInp.value.trim()) return alert('Nome obrigatório');
-                const ingredients = ingInp.value.split(',').map(s => s.trim()).filter(Boolean);
-                editItem(catId, itemId, { name: nameInp.value.trim(), price: parseFloat(priceInp.value || '0'), notes: noteInp.value.trim(), ingredients });
-                closeModal();
-            };
-            actions.appendChild(cancel); actions.appendChild(save); box.appendChild(actions);
-            openModal(box);
-        }
+function deleteCategory(catId) {
+  if(!confirm('ATENÇÃO: Isso apagará a seção inteira e todos os itens dela. Continuar?')) return;
+  data.categories = data.categories.filter(c => c.id !== catId);
+  saveData();
+}
 
-        /* ---------- import / export / load ---------- */
-        function exportJSON() {
-            const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'cardapio_brisa.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-        }
-        function importJSON(file) {
-            const r = new FileReader(); r.onload = () => {
-                try {
-                    const json = JSON.parse(r.result);
-                    if (!json || !Array.isArray(json.categories)) throw new Error('Formato inválido');
-                    if (!confirm('Substituir o cardápio atual?')) return;
-                    state = json; saveState(); render(); alert('Cardápio atualizado');
-                } catch (e) { alert('Erro: ' + e.message); }
-            }; r.readAsText(file);
-        }
-        async function loadFromUrl(url) {
-            if (!url) return alert('Cole a URL pública antes');
-            try {
-                const res = await fetch(url, { cache: 'no-store' });
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                const json = await res.json();
-                if (!json || !Array.isArray(json.categories)) throw new Error('Formato inválido');
-                if (!confirm('Substituir o cardápio local pelo remoto?')) return;
-                state = json; saveState(); render(); alert('Carregado');
-            } catch (e) { alert('Erro ao carregar: ' + e.message); }
-        }
+// --- AUTENTICAÇÃO E ADMIN ---
+const ADMIN_PASS = 'brisa2026';
+const logoBtn = document.getElementById('logoBtn');
 
-        /* ---------- quick add (admin FAB) ---------- */
-        function quickAdd() {
-            if (!state.categories.length) { alert('Crie uma seção antes'); return; }
-            const name = prompt('Nome do item:'); if (!name) return;
-            const priceRaw = prompt('Preço (ex: 15.50):', '0'); if (priceRaw === null) return;
-            const price = parseFloat(priceRaw.replace(',', '.')) || 0;
-            const cat = state.categories[0];
-            addItem(cat.id, { name: name.trim(), price, notes: '', ingredients: [] });
-        }
+// Lógica de "7 toques"
+let tapCount = 0;
+let tapTimer;
 
-        /* ---------- bindings ---------- */
-        qInput.addEventListener('input', () => render());
-        document.getElementById('fab').addEventListener('click', () => { if (!isAdmin) return; quickAdd(); });
-        document.getElementById('btnAddCat').addEventListener('click', () => { if (!isAdmin) return; addCategoryModal(); });
-        document.getElementById('btnAddItem').addEventListener('click', () => { if (!isAdmin) return; addItemModal(); });
-        document.getElementById('btnAdmin').addEventListener('click', () => { if (!isAdmin) return; openAdminPanel(); });
-        document.getElementById('btnExport').addEventListener('click', () => { if (!isAdmin) return; exportJSON(); });
-        document.getElementById('btnLoadUrl').addEventListener('click', () => { if (!isAdmin) return; const url = document.getElementById('urlLoad').value.trim(); if (url) loadFromUrl(url); });
-        fileIn.addEventListener('change', (e) => { const f = e.target.files[0]; if (!f) return; if (!isAdmin) return; importJSON(f); e.target.value = ''; });
-        document.addEventListener('keydown', (e) => { if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') { e.preventDefault(); qInput.focus(); } });
+logoBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  tapCount++;
+  
+  // Feedback visual de toque (vibração leve se suportado ou console)
+  if(navigator.vibrate) navigator.vibrate(50);
+  
+  clearTimeout(tapTimer);
+  
+  if (tapCount === 7) {
+    tapCount = 0;
+    askAdmin();
+  } else {
+    tapTimer = setTimeout(() => { tapCount = 0; }, 600);
+  }
+});
 
-        /* ---------- small admin panel ---------- */
-        function openAdminPanel() {
-            const box = document.createElement('div'); box.className = 'modal'; box.innerHTML = `<h3>Área interna</h3>`;
-            const change = document.createElement('button'); change.className = 'btn'; change.textContent = 'Trocar senha'; change.onclick = () => { closeModal(); changePasswordModal(); };
-            const exp = document.createElement('button'); exp.className = 'btn'; exp.textContent = 'Salvar cópia'; exp.onclick = () => { exportJSON(); closeModal(); };
-            const imp = document.createElement('button'); imp.className = 'btn'; imp.textContent = 'Importar arquivo'; imp.onclick = () => { closeModal(); fileIn.click(); };
-            const reset = document.createElement('button'); reset.className = 'btn'; reset.textContent = 'Resetar cardápio'; reset.onclick = () => { if (confirm('Resetar para os dados iniciais?')) { state = seedData(); saveState(); render(); closeModal(); } };
-            const row = document.createElement('div'); row.className = 'row'; row.style.gap = '8px'; row.style.marginTop = '12px';
-            row.appendChild(change); row.appendChild(exp); row.appendChild(imp); row.appendChild(reset);
-            box.appendChild(row);
-            const closeBtn = document.createElement('div'); closeBtn.className = 'modal-actions';
-            const c = document.createElement('button'); c.className = 'btn'; c.textContent = 'Fechar'; c.onclick = closeModal; closeBtn.appendChild(c);
-            box.appendChild(closeBtn);
-            openModal(box);
-        }
+// Lógica de "Long Press" (Segurar por 3s)
+let longPressTimer;
+logoBtn.addEventListener('touchstart', (e) => {
+  // e.preventDefault(); // Comentado para permitir scroll se necessário
+  longPressTimer = setTimeout(() => {
+    if(navigator.vibrate) navigator.vibrate(200);
+    askAdmin();
+  }, 3000); 
+}, {passive: true});
 
-        function changePasswordModal() {
-            const box = document.createElement('div'); box.className = 'modal'; box.innerHTML = `<h3>Alterar senha</h3>`;
-            const cur = document.createElement('input'); cur.className = 'input'; cur.type = 'password'; cur.placeholder = 'Senha atual';
-            const nw = document.createElement('input'); nw.className = 'input'; nw.type = 'password'; nw.placeholder = 'Nova senha';
-            const nw2 = document.createElement('input'); nw2.className = 'input'; nw2.type = 'password'; nw2.placeholder = 'Confirmar nova senha';
-            const wrap = document.createElement('div'); wrap.className = 'frow'; wrap.appendChild(cur); wrap.appendChild(nw); wrap.appendChild(nw2); box.appendChild(wrap);
-            const actions = document.createElement('div'); actions.className = 'modal-actions';
-            const cancel = document.createElement('button'); cancel.className = 'btn'; cancel.textContent = 'Cancelar'; cancel.onclick = closeModal;
-            const save = document.createElement('button'); save.className = 'btn primary'; save.textContent = 'Salvar'; save.onclick = async () => {
-                if (!cur.value || !nw.value) return alert('Preencha todos os campos');
-                if (nw.value !== nw2.value) return alert('Confirmação não confere');
-                const ok = await checkPassword(cur.value);
-                if (!ok) return alert('Senha atual incorreta');
-                const newHash = await sha256(nw.value);
-                setAdminHash(newHash);
-                alert('Senha alterada');
-                closeModal();
-            };
-            actions.appendChild(cancel); actions.appendChild(save); box.appendChild(actions);
-            openModal(box);
-        }
+logoBtn.addEventListener('touchend', () => { 
+  clearTimeout(longPressTimer); 
+});
 
-        /* ---------- init / autosave ---------- */
-        render();
-        setInterval(() => saveState(), 5000);
+logoBtn.addEventListener('mousedown', () => { 
+  longPressTimer = setTimeout(askAdmin, 3000); 
+});
+logoBtn.addEventListener('mouseup', () => { 
+  clearTimeout(longPressTimer); 
+});
 
-        /* ---------- expose for power-user ---------- */
-        window.brisaCardapio = {
-            get: () => JSON.parse(JSON.stringify(state)),
-            login: async (pw) => { if (await checkPassword(pw)) { isAdmin = true; render(); return true; } return false; },
-            logout: () => { isAdmin = false; render(); },
-            reset: () => { if (confirm('Resetar para dados iniciais?')) { state = seedData(); saveState(); render(); } }
-        };
-    </script>
+function askAdmin() {
+  if (isAdmin) return; // Já está logado
+  
+  // Pequeno delay para evitar conflito de UI
+  setTimeout(() => {
+    const pass = prompt('Área Administrativa\nDigite a senha:');
+    if (pass === ADMIN_PASS) {
+      toggleAdmin(true);
+      alert('Modo Admin Ativado!\nUse a barra inferior para editar.');
+    } else if (pass !== null) {
+      alert('Senha incorreta.');
+    }
+  }, 100);
+}
+
+function toggleAdmin(status) {
+  isAdmin = status;
+  document.body.classList.toggle('is-admin', status);
+  renderMenu();
+}
+
+// Inicialização
+window.addEventListener('load', () => {
+  renderMenu();
+  console.log('Brisa Lounge Menu Carregado');
+});
+
+</script>
 </body>
-
 </html>
