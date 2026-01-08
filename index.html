@@ -445,31 +445,127 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebas
 import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-/* --------------------- FALLBACK INITIAL DATA (kept for robustness) --------------------- */
+/* --------------------- FALLBACK INITIAL DATA (completo a partir do PDF) --------------------- */
 const INITIAL_DATA = {
   categories: [
-    { id: 'cat_drinks', name: 'Drinks', items: [
-      { id: 'dk1', name: 'Caipirinha de Cachaça (300ml)', price: 15.00, desc: 'Escolha: Morango ou Limão.' },
-      { id: 'dk2', name: 'Caipirinha de Vodka/Saquê', price: 20.00, desc: '300ml. Escolha: Morango ou Limão.' },
-      { id: 'dk3', name: 'Caipirinha Gourmet Brisa', price: 35.00, desc: 'Especial da casa. Escolha: Morango ou Limão.' },
-      { id: 'dk4', name: 'Gin Eternity (500ml)', price: 15.00, desc: 'Sabores: Melancia, Tropical, Maçã Verde ou Royale.' },
-      { id: 'dk6', name: 'Gin Premium & Red Bull', price: 30.00, desc: 'Com fruta. Escolha: Melancia ou Tropical.' }
-    ]},
-    { id: 'cat_combos', name: 'Combos', items: [
-      { id: 'cb1', name: "Jack Daniel's Tradicional", price: 280.00, desc: 'Garrafa + 4 Gelos de Sabor + 4 Red Bull.' },
-      { id: 'cb2', name: "Jack Daniel's Sabores", price: 300.00, desc: 'Garrafa (Honey, Fire ou Apple) + 4 Gelos + 4 Red Bull.' },
-      { id: 'cb6', name: 'Gin Tanqueray', price: 250.00, desc: 'Garrafa + Frutas + 4 Red Bull ou 5 Tônicas.' }
-    ]},
-    { id: 'cat_beers', name: 'Cervejas', items: [
-      { id: 'br1', name: 'Original (600ml)', price: 15.00, desc: 'Garrafa gelada.' },
-      { id: 'br2', name: 'Spaten (600ml)', price: 17.00, desc: 'Puro malte.' },
-      { id: 'br3', name: 'Heineken (600ml)', price: 19.00, desc: 'Premium.' }
-    ]},
-    { id: 'cat_food', name: 'Comidas', items: [
-      { id: 'fd1', name: 'Batata com Cheddar e Bacon', price: 35.00, desc: '' },
-      { id: 'fd5', name: 'Porção Mista', price: 40.00, desc: 'Escolha 2 itens (Exceto Peixe).' },
-      { id: 'fd13', name: 'Tábua Picanha', price: 100.00, desc: 'Aprox 600g + Molhos e farofa.' }
-    ]}
+    {
+      id: 'drinks_brisa',
+      name: 'Drinks Brisa',
+      items: [
+        { id: 'd_caip_cachaca', name: 'Caipirinha de Cachaça (300ml)', price: 15.00, desc: 'Escolha uma fruta: Morango ou Limão.' },
+        { id: 'd_caip_vodka', name: 'Caipirinha de Vodka / Saquê (300ml)', price: 20.00, desc: 'Escolha uma fruta: Morango ou Limão.' },
+        { id: 'd_caip_gourmet', name: 'Caipirinha Gourmet Brisa', price: 35.00, desc: 'Especial da casa. Escolha: Morango ou Limão.' },
+        { id: 'd_gin_eternity_700', name: 'Gin Eternity (700ml) - Drink', price: 15.00, desc: 'Sabores: Melancia, Tropical, Maçã Verde e Royale.' },
+        { id: 'd_gin_eternity_500', name: 'Gin Eternity (500ml) - Drink', price: 10.00, desc: 'Sabores: Melancia, Tropical, Maçã Verde e Royale.' },
+        { id: 'd_gin_premium_rb', name: 'Gin Premium & Red Bull', price: 30.00, desc: 'Escolha o sabor: Melancia ou Tropical. Com fruta.' },
+        { id: 'd_copao_premium_rb', name: 'Copão Premium & Red Bull (300ml)', price: 40.00, desc: 'Escolha o sabor: Melancia ou Tropical. Com fruta.' },
+        { id: 'd_moscow', name: 'Moscow Mule (Tradicional)', price: 30.00, desc: 'Tradicional.' },
+        { id: 'd_copao', name: 'Copão', price: 30.00, desc: 'Red Label + energético (700ml).' }
+      ]
+    },
+
+    {
+      id: 'combos',
+      name: 'Combos / Garrafas',
+      items: [
+        { id: 'c_redlabel', name: 'Red Label + Energético (copão/700ml)', price: 30.00, desc: 'Copão com energético.' },
+        { id: 'c_whitehorse', name: 'White Horse + Energético', price: 25.00, desc: '' },
+        { id: 'c_jack_rb', name: "Jack Daniel's + Red Bull", price: 50.00, desc: '' },
+        { id: 'c_sm_ir', name: 'Smirnoff + Energético', price: 20.00, desc: '' },
+        { id: 'c_absolut_rb', name: 'Absolut + Red Bull', price: 40.00, desc: '' },
+        { id: 'c_jack_macaverde', name: "Jack Daniel's Maçã Verde + Red Bull", price: 55.00, desc: '' },
+        { id: 'c_gin_tanqueray', name: 'Gin Tanqueray (garrafa)', price: 250.00, desc: 'Acompanha garrafa + frutas + 4 Red Bull ou 5 tônicas.' },
+        { id: 'c_ciroc', name: 'Ciroc Tradicional (garrafa)', price: 320.00, desc: 'Acompanha garrafa + 4 gelos de sabores + 4 Red Bull.' },
+        { id: 'c_jack_tradicional', name: "Jack Daniel's Tradicional (garrafa)", price: 280.00, desc: 'Acompanha garrafa + 4 gelos de sabores + 4 Red Bull.' },
+        { id: 'c_jack_sabores', name: "Jack Daniel's Sabores (garrafa)", price: 300.00, desc: 'Acompanha garrafa + 4 gelos de sabores + 4 Red Bull.' },
+        { id: 'c_chivas12', name: 'Chivas 12 anos (garrafa)', price: 250.00, desc: 'Acompanha garrafa + 4 gelos de sabores + 4 Red Bull.' },
+        { id: 'c_absolut_garrafa', name: 'Absolut (garrafa)', price: 200.00, desc: 'Acompanha garrafa + 4 gelos de sabores + 4 Red Bull.' },
+        { id: 'c_malibu_garrafa', name: 'Malibu (garrafa)', price: 120.00, desc: 'Observação: energético Bally.' },
+        { id: 'c_malibu_shot', name: 'Malibu (dose)', price: 30.00, desc: '' }
+      ]
+    },
+
+    {
+      id: 'doses',
+      name: 'Doses',
+      items: [
+        { id: 'dose_licor43', name: 'Licor 43 (dose)', price: 18.00, desc: '' },
+        { id: 'dose_licor_ballena', name: 'Licor Ballena (dose)', price: 18.00, desc: '' },
+        { id: 'dose_tequila', name: 'Tequila (Jose Cuervo) (dose)', price: 18.00, desc: '' },
+        { id: 'dose_jack', name: 'Jack (dose)', price: 30.00, desc: '' }
+      ]
+    },
+
+    {
+      id: 'cervejas',
+      name: 'Cervejas & Baldes',
+      items: [
+        { id: 'beer_original_600', name: 'Original (600ml)', price: 15.00, desc: 'Garrafa gelada.' },
+        { id: 'beer_spaten_600', name: 'Spaten (600ml)', price: 17.00, desc: 'Puro malte.' },
+        { id: 'beer_heineken_600', name: 'Heineken (600ml)', price: 19.00, desc: 'Premium.' },
+        { id: 'balde_original_4', name: 'Balde Original (4 unidades)', price: 56.00, desc: '' },
+        { id: 'balde_spaten_4', name: 'Balde Spaten (4 unidades)', price: 64.00, desc: '' },
+        { id: 'balde_heineken_4', name: 'Balde Heineken (4 unidades)', price: 72.00, desc: '' },
+        { id: 'balde_heineken_10', name: 'Balde Heineken Long (10 unidades)', price: 110.00, desc: '' },
+        { id: 'longneck_heineken', name: 'Heineken (long neck)', price: 12.00, desc: '' },
+        { id: 'longneck_heineken_0', name: 'Heineken 0%', price: 12.00, desc: '' },
+        { id: 'skol_beats', name: 'Skol Beats', price: 12.00, desc: '' },
+        { id: 'budweiser', name: 'Budweiser', price: 8.00, desc: '' },
+        { id: 'corona', name: 'Corona', price: 12.00, desc: '' },
+        { id: 'smirnoff_ice', name: 'Smirnoff Ice', price: 12.00, desc: '' }
+      ]
+    },
+
+    {
+      id: 'diversos',
+      name: 'Diversos / Sem Álcool',
+      items: [
+        { id: 'refri_suco', name: 'Refrigerante / Suco (lata)', price: 6.00, desc: 'Coca-Cola, Guaraná, Sprite, Fanta e Del Valle.' },
+        { id: 'agua', name: 'Água (com ou sem gás)', price: 5.00, desc: '' },
+        { id: 'agua_tonica', name: 'Água Tônica', price: 6.00, desc: '' },
+        { id: 'redbull', name: 'Red Bull', price: 12.00, desc: '' },
+        { id: 'gelo_sabores', name: 'Gelo Sabores', price: 3.00, desc: '' },
+        { id: 'halls_trident', name: 'Halls / Trident', price: 3.50, desc: '' },
+        { id: 'snickers', name: 'Snickers', price: 6.00, desc: '' }
+      ]
+    },
+
+    {
+      id: 'narguile',
+      name: 'Narguilé',
+      items: [
+        { id: 'n_rosh', name: 'Rosh', price: 15.00, desc: '' },
+        { id: 'n_aluguel', name: 'Aluguel narguilé (taxa inicial)', price: 5.00, desc: 'Cobrado no primeiro atendimento.' }
+      ]
+    },
+
+    {
+      id: 'porcoes',
+      name: 'Porções',
+      items: [
+        { id: 'p_calabresa', name: 'Calabresa', price: 30.00, desc: '' },
+        { id: 'p_batata_cheddar_bacon', name: 'Batata com Cheddar e Bacon', price: 35.00, desc: '' },
+        { id: 'p_onion_rings', name: 'Onion Rings', price: 25.00, desc: '' },
+        { id: 'p_salgados_fritos', name: 'Salgados Fritos', price: 25.00, desc: '' },
+        { id: 'p_mista', name: 'Porção Mista (Escolha 2 itens exceto peixe)', price: 40.00, desc: '' },
+        { id: 'p_isca_peixe', name: 'Isca de Peixe', price: 60.00, desc: '' },
+        { id: 'p_frango_passarinho', name: 'Frango a Passarinho', price: 35.00, desc: '' }
+      ]
+    },
+
+    {
+      id: 'caldos_tabuas',
+      name: 'Porções, Caldos e Tábuas',
+      items: [
+        { id: 'caldo_verde', name: 'Caldo Verde (500ml)', price: 18.00, desc: '' },
+        { id: 'caldo_feijao', name: 'Caldo de Feijão (500ml)', price: 18.00, desc: '' },
+        { id: 'mocoto', name: 'Mocotó (500ml)', price: 20.00, desc: '' },
+        { id: 'abobora_carne_seca', name: 'Abóbora com Carne Seca (500ml)', price: 20.00, desc: '' },
+        { id: 't_completa', name: 'Porção Completa', price: 120.00, desc: 'Acompanha isca de peixe mais 2 opções de sua escolha.' },
+        { id: 't_picanha', name: 'Tábua Picanha com Batata (≈600g)', price: 100.00, desc: 'Aproximadamente 600g de picanha + molho da casa, barbecue, vinagrete e farofa.' },
+        { id: 't_linguica', name: 'Tábua Linguiça com Aligot (≈500g)', price: 70.00, desc: 'Aproximadamente 500g de linguiça + molho da casa, vinagrete e farofa.' }
+      ]
+    }
   ]
 };
 
