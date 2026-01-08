@@ -18,21 +18,21 @@
 :root {
   --bg-body: #050b14;
   --bg-card: #0e1623;
-  --bg-header: rgba(5, 11, 20, 0.95);
+  --bg-header: rgba(5, 11, 20, 0.85);
   --text-main: #f0f4f8;
   --text-muted: #94a3b8;
-  --gold: #d4af37; /* Dourado clássico do PDF */
-  --gold-glow: #fceabb;
+  --gold: #d4af37; /* Dourado clássico */
+  --gold-dark: #b8860b;
   --danger: #ef4444;
   --success: #10b981;
   --radius: 16px;
-  --shadow: 0 4px 20px rgba(0,0,0,0.4);
   --font-main: 'Inter', sans-serif;
   --font-display: 'Playfair Display', serif;
   --safe-area-bottom: env(safe-area-inset-bottom);
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; }
 html, body { margin: 0; padding: 0; height: 100%; font-family: var(--font-main); background-color: var(--bg-body); color: var(--text-main); }
 
 /* --- ESTRUTURA --- */
@@ -40,20 +40,24 @@ html, body { margin: 0; padding: 0; height: 100%; font-family: var(--font-main);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  padding-bottom: calc(100px + var(--safe-area-bottom)); /* Espaço extra para scroll final */
+  padding-bottom: calc(100px + var(--safe-area-bottom));
 }
 
-/* --- HEADER --- */
+/* --- HEADER OTIMIZADO --- */
 header {
   position: sticky;
   top: 0;
   z-index: 50;
   background: var(--bg-header);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 16px 20px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid rgba(255,255,255,0.05);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  padding-bottom: 0; /* Espaço removido para a nav bar colar */
+}
+
+.header-content {
+  padding: 16px 20px 10px 20px;
 }
 
 .brand-row {
@@ -63,24 +67,20 @@ header {
   margin-bottom: 16px;
 }
 
-.logo {
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, var(--gold), #b8860b);
+/* Logo Image */
+.logo-img {
+  width: 50px;
+  height: 50px;
   border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-display);
-  font-size: 24px;
-  color: #000;
-  font-weight: bold;
-  box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+  object-fit: contain;
+  background: #000; /* Fundo preto para destacar a logo se for PNG transparente */
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
   cursor: pointer;
   user-select: none;
   transition: transform 0.2s;
 }
-.logo:active { transform: scale(0.95); }
+.logo-img:active { transform: scale(0.95); }
 
 .brand-info h1 {
   margin: 0;
@@ -91,10 +91,22 @@ header {
 }
 
 .brand-info p {
-  margin: 4px 0 0 0;
-  font-size: 13px;
+  margin: 2px 0 0 0;
+  font-size: 12px;
   color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
+
+.connection-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--danger); /* Começa vermelho (offline) */
+    margin-left: auto;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+.connection-status.online { background-color: var(--success); box-shadow: 0 0 8px var(--success); }
 
 /* --- BUSCA --- */
 .search-container {
@@ -110,9 +122,9 @@ header {
   font-size: 15px;
   font-family: var(--font-main);
   outline: none;
-  transition: border-color 0.2s, background 0.2s;
+  transition: all 0.2s;
 }
-.search-input:focus { border-color: var(--gold); background: rgba(255,255,255,0.08); }
+.search-input:focus { border-color: var(--gold); background: rgba(255,255,255,0.08); box-shadow: 0 0 0 2px rgba(212,175,55,0.1); }
 .search-icon {
   position: absolute;
   left: 14px;
@@ -122,11 +134,44 @@ header {
   pointer-events: none;
 }
 
+/* --- CATEGORY NAV (NOVO) --- */
+.category-nav {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 0 20px 16px 20px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE */
+  mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+}
+.category-nav::-webkit-scrollbar { display: none; }
+
+.nav-pill {
+  white-space: nowrap;
+  padding: 8px 16px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.nav-pill.active, .nav-pill:active {
+  background: var(--gold);
+  color: #000;
+  border-color: var(--gold);
+  font-weight: 600;
+}
+
 /* --- LISTA DE ITENS --- */
-main { padding: 20px; width: 100%; max-width: 800px; margin: 0 auto; }
+main { padding: 24px 20px; width: 100%; max-width: 800px; margin: 0 auto; }
 
 .category-section {
-  margin-bottom: 32px;
+  margin-bottom: 40px;
+  scroll-margin-top: 180px; /* Para o scroll parar no lugar certo */
   animation: fadeIn 0.5s ease;
 }
 
@@ -134,14 +179,14 @@ main { padding: 20px; width: 100%; max-width: 800px; margin: 0 auto; }
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   padding-bottom: 8px;
   border-bottom: 1px solid rgba(212, 175, 55, 0.2);
 }
 
 .cat-title {
   font-family: var(--font-display);
-  font-size: 20px;
+  font-size: 24px;
   color: var(--text-main);
   margin: 0;
 }
@@ -158,7 +203,7 @@ main { padding: 20px; width: 100%; max-width: 800px; margin: 0 auto; }
   align-items: flex-start;
   gap: 16px;
   border: 1px solid rgba(255,255,255,0.03);
-  transition: transform 0.2s, background 0.2s;
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -168,7 +213,7 @@ main { padding: 20px; width: 100%; max-width: 800px; margin: 0 auto; }
 
 .item-content { flex: 1; }
 .item-name { font-weight: 600; font-size: 16px; margin-bottom: 6px; color: #fff; line-height: 1.3; }
-.item-desc { font-size: 13px; color: var(--text-muted); line-height: 1.4; display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
+.item-desc { font-size: 13px; color: var(--text-muted); line-height: 1.4; }
 
 .item-price {
   font-weight: 700;
@@ -179,7 +224,29 @@ main { padding: 20px; width: 100%; max-width: 800px; margin: 0 auto; }
   padding: 6px 10px;
   border-radius: 8px;
   text-align: right;
+  min-width: 80px;
 }
+
+/* --- TOAST NOTIFICATION (NOVO) --- */
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  background: rgba(16, 185, 129, 0.9);
+  backdrop-filter: blur(8px);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  z-index: 2000;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
 
 /* --- ADMIN UI (FIXA) --- */
 .admin-bar {
@@ -187,7 +254,7 @@ main { padding: 20px; width: 100%; max-width: 800px; margin: 0 auto; }
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(10, 15, 25, 0.98);
+  background: rgba(10, 15, 25, 0.95);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-top: 1px solid rgba(212, 175, 55, 0.3);
@@ -196,22 +263,22 @@ main { padding: 20px; width: 100%; max-width: 800px; margin: 0 auto; }
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 999; /* Garante que fique acima de tudo */
+  z-index: 999;
   transform: translateY(150%);
   transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
 }
 
 .is-admin .admin-bar { transform: translateY(0); }
-.is-admin .app { padding-bottom: 160px; } /* Empurra o conteúdo pra cima */
+.is-admin .app { padding-bottom: 160px; }
 
 .admin-actions { display: flex; gap: 10px; overflow-x: auto; padding-right: 10px; }
 .admin-actions::-webkit-scrollbar { display: none; }
 
 .btn {
   border: none;
-  border-radius: 10px;
-  padding: 10px 16px;
+  border-radius: 12px;
+  padding: 12px 18px;
   font-weight: 600;
   font-size: 13px;
   cursor: pointer;
@@ -223,28 +290,27 @@ main { padding: 20px; width: 100%; max-width: 800px; margin: 0 auto; }
   font-family: var(--font-main);
 }
 
-.btn-primary { background: var(--gold); color: #000; }
+.btn-primary { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: #000; box-shadow: 0 4px 12px rgba(212,175,55,0.3); }
 .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; }
-.btn-danger { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
-.btn:active { filter: brightness(0.9); }
+.btn-danger { background: rgba(239, 68, 68, 0.1); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
+.btn:active { transform: scale(0.96); }
 
-/* Ações flutuantes nos cards (Admin) */
 .admin-card-actions {
   display: none;
   position: absolute;
   top: 8px;
   right: 8px;
   gap: 6px;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.8);
   padding: 4px;
   border-radius: 20px;
+  backdrop-filter: blur(4px);
 }
 .is-admin .item-card:hover .admin-card-actions, 
 .is-admin .item-card:focus-within .admin-card-actions { display: flex; }
-/* Em mobile, sempre mostrar botões de admin nos cards */
 @media (hover: none) { .is-admin .admin-card-actions { display: flex; } }
 
-.btn-icon { width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--bg-body); border: 1px solid var(--gold); color: var(--gold); font-size: 16px; }
+.btn-icon { width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--bg-body); border: 1px solid var(--gold); color: var(--gold); font-size: 16px; cursor: pointer; }
 
 /* --- MODAL --- */
 .modal-backdrop {
@@ -285,7 +351,7 @@ main { padding: 20px; width: 100%; max-width: 800px; margin: 0 auto; }
 .modal-close { background: none; border: none; color: var(--text-muted); font-size: 28px; cursor: pointer; padding: 0 8px; line-height: 1; }
 
 .modal-body { padding: 24px; overflow-y: auto; }
-.modal-price-big { font-size: 28px; color: var(--gold); font-weight: 700; margin-top: 10px; text-align: right; }
+.modal-price-big { font-size: 32px; color: var(--gold); font-weight: 700; margin-top: 10px; text-align: right; text-shadow: 0 0 20px rgba(212,175,55,0.3); }
 
 .form-group { margin-bottom: 16px; }
 .form-label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--text-muted); }
@@ -299,45 +365,62 @@ main { padding: 20px; width: 100%; max-width: 800px; margin: 0 auto; }
   font-family: inherit;
   font-size: 15px;
 }
-.form-input:focus { border-color: var(--gold); outline: none; }
+.form-input:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 0 2px rgba(212,175,55,0.1); }
 
 .modal-footer { padding: 16px 24px; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: flex-end; gap: 12px; background: rgba(0,0,0,0.2); padding-bottom: max(16px, var(--safe-area-bottom)); }
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-.empty-state { text-align: center; padding: 40px; color: var(--text-muted); font-style: italic; }
+.empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); font-style: italic; }
 </style>
 </head>
 <body>
 
 <div class="app">
   <header>
-    <div class="brand-row">
-      <!-- O logo é o "botão secreto" para admin -->
-      <div id="logoBtn" class="logo" title="Toque 7 vezes para Admin">B</div>
-      <div class="brand-info">
-        <h1>Brisa Lounge Bar</h1>
-        <p>Menu Digital</p>
+    <div class="header-content">
+      <div class="brand-row">
+        <!-- LOGO ATUALIZADA: logo.png -->
+        <img src="logo.jpg" alt="Logo Brisa" id="logoBtn" class="logo-img" title="Toque 7 vezes para Admin" onerror="this.style.display='none'">
+        
+        <div class="brand-info">
+          <h1>Brisa Lounge</h1>
+          <p>Cardápio Digital</p>
+        </div>
+        <div id="connStatus" class="connection-status" title="Status da Conexão"></div>
+      </div>
+      <div class="search-container">
+        <span class="search-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </span>
+        <input type="text" id="searchInput" class="search-input" placeholder="O que vamos beber hoje?">
       </div>
     </div>
-    <div class="search-container">
-      <span class="search-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-      </span>
-      <input type="text" id="searchInput" class="search-input" placeholder="O que vamos beber hoje? (ex: Gin, Heineken)">
-    </div>
+    
+    <!-- BARRA DE NAVEGAÇÃO DE CATEGORIAS -->
+    <nav id="catNav" class="category-nav">
+      <!-- Preenchido via JS -->
+    </nav>
   </header>
 
   <main id="menuList">
-    <!-- Lista gerada via JS -->
+    <div class="empty-state">
+      <div style="margin-bottom:10px; font-size:24px;">🍸</div>
+      Carregando cardápio...
+    </div>
   </main>
+</div>
+
+<!-- TOAST DE SUCESSO -->
+<div id="toast" class="toast">
+  <span>✓</span> <span id="toastMsg">Alteração Salva!</span>
 </div>
 
 <!-- BARRA DE ADMINISTRAÇÃO FIXA -->
 <div class="admin-bar" id="adminBar">
   <div style="display:flex; align-items:center; gap:10px;">
-    <div style="background:var(--success);width:8px;height:8px;border-radius:50%"></div>
+    <div style="background:var(--success);width:8px;height:8px;border-radius:50%; box-shadow:0 0 8px var(--success)"></div>
     <span style="font-size:12px; color:var(--text-muted); font-weight:bold; line-height:1.2">MODO<br>ADMIN</span>
     <div style="height:30px; width:1px; background:rgba(255,255,255,0.1); margin-left:8px;"></div>
   </div>
@@ -346,7 +429,6 @@ main { padding: 20px; width: 100%; max-width: 800px; margin: 0 auto; }
       <span>+</span> Novo Item
     </button>
     <button class="btn btn-outline" onclick="addNewCategory()">Nova Seção</button>
-    <button class="btn btn-outline" onclick="exportData()">Backup</button>
     <button class="btn btn-danger" onclick="toggleAdmin(false)">Sair</button>
   </div>
 </div>
@@ -358,206 +440,300 @@ main { padding: 20px; width: 100%; max-width: 800px; margin: 0 auto; }
   </div>
 </div>
 
-<script>
-/**
- * BRISA LOUNGE BAR - CARDÁPIO DIGITAL
- * Versão Revisada & Corrigida
- */
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-// --- DADOS INICIAIS (Baseado no PDF fornecido) ---
+/* --------------------- FALLBACK INITIAL DATA (kept for robustness) --------------------- */
 const INITIAL_DATA = {
   categories: [
-    {
-      id: 'cat_drinks', name: 'Drinks Brisa', items: [
-        { id: 'dk1', name: 'Caipirinha de Cachaça (300ml)', price: 15.00, desc: 'Escolha: Morango ou Limão.' },
-        { id: 'dk2', name: 'Caipirinha de Vodka/Saquê (300ml)', price: 20.00, desc: 'Escolha: Morango ou Limão.' },
-        { id: 'dk3', name: 'Caipirinha Gourmet Brisa', price: 35.00, desc: 'Especial da casa. Escolha: Morango ou Limão.' },
-        { id: 'dk4', name: 'Gin Eternity (500ml)', price: 10.00, desc: 'Sabores: Melancia, Tropical, Maçã Verde ou Royale.' },
-        { id: 'dk5', name: 'Gin Eternity (700ml)', price: 15.00, desc: 'Sabores: Melancia, Tropical, Maçã Verde ou Royale.' },
-        { id: 'dk6', name: 'Gin Premium & Red Bull', price: 30.00, desc: 'Com fruta. Escolha: Melancia ou Tropical.' },
-        { id: 'dk7', name: 'Copão Premium & Red Bull', price: 40.00, desc: 'Copo grande com fruta. Escolha: Melancia ou Tropical.' },
-        { id: 'dk8', name: 'Moscow Mule Tradicional', price: 30.00, desc: 'Vodka, ginger beer, limão e espuma.' }
-      ]
-    },
-    {
-      id: 'cat_combos', name: 'Combos & Garrafas', items: [
-        { id: 'cb1', name: 'Jack Daniel\'s Tradicional', price: 280.00, desc: 'Garrafa + 4 Gelos de Sabor + 4 Red Bull.' },
-        { id: 'cb2', name: 'Jack Daniel\'s Sabores', price: 300.00, desc: 'Garrafa (Honey, Fire ou Apple) + 4 Gelos de Sabor + 4 Red Bull.' },
-        { id: 'cb3', name: 'Chivas 12 Anos', price: 250.00, desc: 'Garrafa + 4 Gelos de Sabor + 4 Red Bull.' },
-        { id: 'cb4', name: 'Black Label', price: 320.00, desc: 'Garrafa + 4 Gelos de Sabor + 4 Red Bull.' },
-        { id: 'cb5', name: 'White Horse', price: 200.00, desc: 'Garrafa + 4 Gelos de Sabor + 4 Red Bull.' },
-        { id: 'cb6', name: 'Gin Tanqueray', price: 250.00, desc: 'Garrafa + Frutas + 4 Red Bull ou 5 Tônicas.' },
-        { id: 'cb7', name: 'Ciroc Tradicional', price: 320.00, desc: 'Garrafa + 4 Gelos de Sabor + 4 Red Bull.' },
-        { id: 'cb8', name: 'Combo Malibu', price: 120.00, desc: 'Garrafa. Observação: Energético Bally.' }
-      ]
-    },
-    {
-      id: 'cat_doses', name: 'Doses & Bebidas', items: [
-        { id: 'ds1', name: 'Malibu (Dose)', price: 30.00, desc: '' },
-        { id: 'ds2', name: 'Smirnoff + Energético', price: 20.00, desc: 'Observação: Energético Bally.' },
-        { id: 'ds3', name: 'Absolut + Red Bull', price: 40.00, desc: '' },
-        { id: 'ds4', name: 'White Horse + Energético', price: 25.00, desc: 'Observação: Energético Bally.' },
-        { id: 'ds5', name: 'Red Label + Energético', price: 30.00, desc: 'Observação: Energético Bally.' },
-        { id: 'ds6', name: 'Jack Daniel\'s + Red Bull', price: 50.00, desc: '' },
-        { id: 'ds7', name: 'Jack Daniel\'s Maçã Verde + Red Bull', price: 55.00, desc: '' },
-        { id: 'ds8', name: 'Licor 43 (Dose)', price: 18.00, desc: '' },
-        { id: 'ds9', name: 'Licor Ballena (Dose)', price: 18.00, desc: '' },
-        { id: 'ds10', name: 'Tequila José Cuervo (Dose)', price: 18.00, desc: '' },
-        { id: 'ds11', name: 'Jack Daniel\'s (Dose)', price: 30.00, desc: '' }
-      ]
-    },
-    {
-      id: 'cat_beers', name: 'Cervejas & Long Necks', items: [
-        { id: 'br1', name: 'Original (600ml)', price: 15.00, desc: 'Garrafa gelada.' },
-        { id: 'br2', name: 'Spaten (600ml)', price: 17.00, desc: 'Puro malte.' },
-        { id: 'br3', name: 'Heineken (600ml)', price: 19.00, desc: 'Premium.' },
-        { id: 'br4', name: 'Balde Original (4 un)', price: 56.00, desc: '4 Garrafas de 600ml.' },
-        { id: 'br5', name: 'Balde Spaten (4 un)', price: 64.00, desc: '4 Garrafas de 600ml.' },
-        { id: 'br6', name: 'Balde Heineken (4 un)', price: 72.00, desc: '4 Garrafas de 600ml.' },
-        { id: 'br7', name: 'Budweiser (Long Neck)', price: 8.00, desc: '' },
-        { id: 'br8', name: 'Spaten (Long Neck)', price: 10.00, desc: '' },
-        { id: 'br9', name: 'Corona (Long Neck)', price: 12.00, desc: '' },
-        { id: 'br10', name: 'Heineken (Long Neck)', price: 12.00, desc: '' },
-        { id: 'br11', name: 'Heineken 0% (Long Neck)', price: 12.00, desc: 'Sem álcool.' },
-        { id: 'br12', name: 'Skol Beats', price: 12.00, desc: '' },
-        { id: 'br13', name: 'Smirnoff Ice', price: 12.00, desc: '' },
-        { id: 'br14', name: 'Balde Heineken Long (10 un)', price: 110.00, desc: '10 unidades no gelo.' }
-      ]
-    },
-    {
-      id: 'cat_misc', name: 'Diversos', items: [
-        { id: 'm1', name: 'Água (Com ou Sem Gás)', price: 5.00, desc: '' },
-        { id: 'm2', name: 'Água Tônica', price: 6.00, desc: '' },
-        { id: 'm3', name: 'Refrigerante / Suco (Lata)', price: 6.00, desc: 'Coca, Guaraná, Sprite, Fanta, Del Valle.' },
-        { id: 'm4', name: 'Red Bull Sabores', price: 12.00, desc: '' },
-        { id: 'm5', name: 'Halls / Trident', price: 3.00, desc: '' },
-        { id: 'm6', name: 'Gelo (Adicional/Copo)', price: 3.50, desc: '' },
-        { id: 'm7', name: 'Snickers', price: 6.00, desc: '' }
-      ]
-    },
-    {
-      id: 'cat_hookah', name: 'Narguilé', items: [
-        { id: 'hk1', name: 'Rosh (Refil de Essência)', price: 15.00, desc: 'Sessão.' },
-        { id: 'hk2', name: 'Aluguel do Narguilé', price: 5.00, desc: 'Taxa cobrada no primeiro uso/aluguel do equipamento.' }
-      ]
-    },
-    {
-      id: 'cat_food', name: 'Porções, Caldos & Tábuas', items: [
-        { id: 'fd1', name: 'Batata com Cheddar e Bacon', price: 35.00, desc: '' },
-        { id: 'fd2', name: 'Onion Rings', price: 30.00, desc: 'Anéis de cebola empanados.' },
-        { id: 'fd3', name: 'Salgados Fritos', price: 25.00, desc: 'Coxinha, bolinha de queijo, etc.' },
-        { id: 'fd4', name: 'Calabresa Acebolada', price: 25.00, desc: '' },
-        { id: 'fd5', name: 'Porção Mista', price: 40.00, desc: 'Escolha 2 itens (Exceto Peixe).' },
-        { id: 'fd6', name: 'Isca de Peixe', price: 60.00, desc: 'Acompanha molho tártaro.' },
-        { id: 'fd7', name: 'Frango a Passarinho', price: 35.00, desc: 'Bem temperado.' },
-        { id: 'fd8', name: 'Porção Completa', price: 120.00, desc: 'Acompanha isca de peixe + 2 opções à sua escolha.' },
-        { id: 'fd9', name: 'Caldo Verde (500ml)', price: 18.00, desc: '' },
-        { id: 'fd10', name: 'Caldo de Feijão (500ml)', price: 18.00, desc: '' },
-        { id: 'fd11', name: 'Caldo de Mocotó (500ml)', price: 20.00, desc: '' },
-        { id: 'fd12', name: 'Abóbora com Carne Seca (500ml)', price: 20.00, desc: '' },
-        { id: 'fd13', name: 'Tábua Picanha com Batata', price: 100.00, desc: 'Aprox 600g de Picanha + Molho da casa, barbecue, vinagrete e farofa.' },
-        { id: 'fd14', name: 'Tábua Linguiça com Aligot', price: 70.00, desc: 'Aprox 500g de Linguiça + Molho da casa, vinagrete e farofa.' }
-      ]
-    }
+    { id: 'cat_drinks', name: 'Drinks', items: [
+      { id: 'dk1', name: 'Caipirinha de Cachaça (300ml)', price: 15.00, desc: 'Escolha: Morango ou Limão.' },
+      { id: 'dk2', name: 'Caipirinha de Vodka/Saquê', price: 20.00, desc: '300ml. Escolha: Morango ou Limão.' },
+      { id: 'dk3', name: 'Caipirinha Gourmet Brisa', price: 35.00, desc: 'Especial da casa. Escolha: Morango ou Limão.' },
+      { id: 'dk4', name: 'Gin Eternity (500ml)', price: 15.00, desc: 'Sabores: Melancia, Tropical, Maçã Verde ou Royale.' },
+      { id: 'dk6', name: 'Gin Premium & Red Bull', price: 30.00, desc: 'Com fruta. Escolha: Melancia ou Tropical.' }
+    ]},
+    { id: 'cat_combos', name: 'Combos', items: [
+      { id: 'cb1', name: "Jack Daniel's Tradicional", price: 280.00, desc: 'Garrafa + 4 Gelos de Sabor + 4 Red Bull.' },
+      { id: 'cb2', name: "Jack Daniel's Sabores", price: 300.00, desc: 'Garrafa (Honey, Fire ou Apple) + 4 Gelos + 4 Red Bull.' },
+      { id: 'cb6', name: 'Gin Tanqueray', price: 250.00, desc: 'Garrafa + Frutas + 4 Red Bull ou 5 Tônicas.' }
+    ]},
+    { id: 'cat_beers', name: 'Cervejas', items: [
+      { id: 'br1', name: 'Original (600ml)', price: 15.00, desc: 'Garrafa gelada.' },
+      { id: 'br2', name: 'Spaten (600ml)', price: 17.00, desc: 'Puro malte.' },
+      { id: 'br3', name: 'Heineken (600ml)', price: 19.00, desc: 'Premium.' }
+    ]},
+    { id: 'cat_food', name: 'Comidas', items: [
+      { id: 'fd1', name: 'Batata com Cheddar e Bacon', price: 35.00, desc: '' },
+      { id: 'fd5', name: 'Porção Mista', price: 40.00, desc: 'Escolha 2 itens (Exceto Peixe).' },
+      { id: 'fd13', name: 'Tábua Picanha', price: 100.00, desc: 'Aprox 600g + Molhos e farofa.' }
+    ]}
   ]
 };
 
-// --- ESTADO & PERSISTÊNCIA ---
-const LS_KEY = 'brisa_menu_v3'; // Chave atualizada para v3
-let data = loadData();
-let isAdmin = false;
+/* --------------------- FIREBASE / APP CONFIG (guarded) --------------------- */
+/* This block protects the script from throwing if __firebase_config isn't injected. */
+let firebaseConfig = null;
+try {
+  if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+    firebaseConfig = JSON.parse(__firebase_config);
+  } else {
+    console.warn('No __firebase_config provided — running in offline/fallback mode.');
+  }
+} catch (err) {
+  console.warn('Failed to parse __firebase_config:', err);
+  firebaseConfig = null;
+}
 
-function loadData() {
+let app = null;
+let db = null;
+let auth = null;
+if (firebaseConfig) {
   try {
-    const saved = localStorage.getItem(LS_KEY);
-    return saved ? JSON.parse(saved) : INITIAL_DATA;
-  } catch(e) {
-    return INITIAL_DATA;
+    app = initializeApp(firebaseConfig);
+    db = getFirestore(app);
+    auth = getAuth(app);
+  } catch (e) {
+    console.error('Firebase init error:', e);
+    app = null; db = null; auth = null;
   }
 }
 
-function saveData() {
-  localStorage.setItem(LS_KEY, JSON.stringify(data));
-  renderMenu();
+const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app';
+const MENU_DOC_PATH = ['artifacts', appId, 'public', 'data', 'menu_store', 'main'];
+
+/* --------------------- GLOBAL STATE --------------------- */
+let data = INITIAL_DATA;
+let isAdmin = false;
+let currentUser = null;
+
+/* --------------------- UTILITIES --------------------- */
+function escapeHtml(str = '') {
+  return String(str)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
 }
 
-function exportData() {
-  const blob = new Blob([JSON.stringify(data, null, 2)], {type : 'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `brisa_backup_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.json`;
-  a.click();
-}
-
-// --- RENDERIZAÇÃO ---
-const menuListEl = document.getElementById('menuList');
-const searchInput = document.getElementById('searchInput');
-
-function formatCurrency(val) {
+window.formatCurrency = function(val) {
   if (val === undefined || val === null) return 'R$ 0,00';
   return Number(val).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+};
+
+/* --------------------- ATTEMPT TO LOAD LOCAL JSON (menu_final_brisa.json) --------------------- */
+async function tryLoadLocalJson() {
+  const candidates = [
+    './menu_final_brisa.json',
+    'menu_final_brisa.json',
+    './menu.json',
+    'menu.json'
+  ];
+  for (const p of candidates) {
+    try {
+      // cache-bust to reflect edits while developing
+      const res = await fetch(p + '?v=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) continue;
+      const j = await res.json();
+      // basic validation
+      if (j && Array.isArray(j.categories) && j.categories.length > 0) {
+        data = j;
+        console.log('Loaded local menu JSON from', p);
+        renderMenu();
+        return true;
+      }
+    } catch (e) {
+      // ignore and try next
+    }
+  }
+  return false;
 }
 
-function renderMenu() {
+/* --------------------- LOGO FALLBACK --------------------- */
+(function ensureLogo() {
+  const img = document.getElementById('logoBtn');
+  if (!img) return;
+  const tryPaths = ['logo.jpg','logo.png','/assets/logo.jpg','/assets/logo.png'];
+  let idx = 0;
+  img.onerror = () => {
+    idx++;
+    if (idx < tryPaths.length) img.src = tryPaths[idx];
+    else img.style.display = 'none';
+  };
+  if (!img.getAttribute('src')) img.src = tryPaths[0];
+})();
+
+/* --------------------- FIREBASE AUTH & SYNC (guarded) --------------------- */
+async function initAuth() {
+  if (!auth) return;
+  try {
+    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+      await signInWithCustomToken(auth, __initial_auth_token);
+    } else {
+      await signInAnonymously(auth);
+    }
+  } catch (err) {
+    console.error("Auth init error", err);
+  }
+}
+if (auth) initAuth();
+
+if (auth) {
+  onAuthStateChanged(auth, (user) => {
+    currentUser = user;
+    const statusEl = document.getElementById('connStatus');
+    if (user) {
+      statusEl.classList.add('online');
+      setupRealtimeSync();
+    } else {
+      statusEl.classList.remove('online');
+    }
+  });
+} else {
+  // no firebase -> ensure connection indicator shows offline and render fallback
+  const statusEl = document.getElementById('connStatus');
+  if (statusEl) statusEl.classList.remove('online');
+}
+
+/* setupRealtimeSync should only run if Firestore (db) is available */
+function setupRealtimeSync() {
+  if (!db) return;
+  try {
+    const docRef = doc(db, ...MENU_DOC_PATH);
+    onSnapshot(docRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const cloud = snapshot.data();
+        if (cloud && cloud.categories) {
+          data = cloud;
+          renderMenu();
+          console.log("Menu sincronizado com Firestore.");
+        }
+      }
+    }, (err) => {
+      console.error("sync err", err);
+    });
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+/* --------------------- RENDERING --------------------- */
+window.renderMenu = function() {
+  const menuListEl = document.getElementById('menuList');
+  const catNavEl = document.getElementById('catNav');
+  const searchInput = document.getElementById('searchInput');
+  const term = searchInput ? searchInput.value.toLowerCase() : '';
+
   menuListEl.innerHTML = '';
-  const term = searchInput.value.toLowerCase();
+  if (catNavEl) catNavEl.innerHTML = '';
+
+  if (!data || !data.categories) {
+    menuListEl.innerHTML = '<div class="empty-state">Cardápio vazio.</div>';
+    return;
+  }
+
   let hasContent = false;
 
-  data.categories.forEach(cat => {
-    // Filtra itens
-    const filteredItems = cat.items.filter(item => 
-      item.name.toLowerCase().includes(term) || 
-      (item.desc && item.desc.toLowerCase().includes(term))
+  data.categories.forEach((cat, catIndex) => {
+    const filteredItems = (cat.items || []).filter(item =>
+      (item.name || '').toLowerCase().includes(term) ||
+      (item.desc || '').toLowerCase().includes(term)
     );
-
     if (filteredItems.length === 0) return;
     hasContent = true;
 
-    // Cria seção
+    // Nav pill
+    if (catNavEl) {
+      const navLink = document.createElement('a');
+      navLink.className = 'nav-pill';
+      navLink.href = '#' + cat.id;
+      navLink.innerText = cat.name;
+      navLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        const el = document.getElementById(cat.id);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document.querySelectorAll('.nav-pill').forEach(el => el.classList.remove('active'));
+        navLink.classList.add('active');
+      });
+      catNavEl.appendChild(navLink);
+      if (catIndex === 0) setTimeout(() => navLink.classList.add('active'), 0);
+    }
+
+    // Section
     const section = document.createElement('section');
     section.className = 'category-section';
-    
-    // Header da Seção
+    section.id = cat.id;
+
     const header = document.createElement('div');
     header.className = 'cat-header';
-    header.innerHTML = `
-      <div>
-        <h2 class="cat-title">${cat.name}</h2>
-        <span class="cat-count">${filteredItems.length} opções</span>
-      </div>
-      ${isAdmin ? `
-        <div class="admin-card-actions" style="position:static; display:flex; background:transparent;">
-           <button class="btn btn-icon" style="border-color:var(--danger); color:var(--danger)" onclick="deleteCategory('${cat.id}')">🗑</button>
-        </div>
-      ` : ''}
-    `;
+
+    const headerLeft = document.createElement('div');
+    headerLeft.innerHTML = `<h2 class="cat-title">${escapeHtml(cat.name)}</h2><span class="cat-count">${filteredItems.length} opções</span>`;
+    header.appendChild(headerLeft);
+
+    if (isAdmin) {
+      const adminWrap = document.createElement('div');
+      adminWrap.className = 'admin-card-actions';
+      adminWrap.style.position = 'static';
+      adminWrap.style.display = 'flex';
+      adminWrap.style.background = 'transparent';
+      const btnDelCat = document.createElement('button');
+      btnDelCat.className = 'btn btn-icon';
+      btnDelCat.title = 'Deletar seção';
+      btnDelCat.innerText = '🗑';
+      btnDelCat.onclick = () => deleteCategory(cat.id);
+      adminWrap.appendChild(btnDelCat);
+      header.appendChild(adminWrap);
+    }
     section.appendChild(header);
 
-    // Itens
     filteredItems.forEach(item => {
       const card = document.createElement('article');
       card.className = 'item-card';
-      // Clique no card abre modal de detalhes
-      card.onclick = (e) => {
-        if(e.target.closest('button')) return; // Ignora clique se for nos botões de admin
-        openItemModal(item);
-      };
+      const content = document.createElement('div');
+      content.className = 'item-content';
+      const title = document.createElement('div');
+      title.className = 'item-name';
+      title.innerHTML = escapeHtml(item.name || '');
+      const desc = document.createElement('div');
+      desc.className = 'item-desc';
+      desc.innerHTML = escapeHtml(item.desc || 'Toque para ver detalhes');
+      content.appendChild(title); content.appendChild(desc);
 
-      card.innerHTML = `
-        <div class="item-content">
-          <div class="item-name">${item.name}</div>
-          <div class="item-desc">${item.desc || 'Toque para ver detalhes'}</div>
-        </div>
-        <div class="item-price">${formatCurrency(item.price)}</div>
-        
-        ${isAdmin ? `
-          <div class="admin-card-actions">
-            <button class="btn btn-icon" onclick="openEditModal('${cat.id}', '${item.id}')">✎</button>
-            <button class="btn btn-icon" style="border-color:var(--danger); color:var(--danger)" onclick="deleteItem('${cat.id}', '${item.id}')">✕</button>
-          </div>
-        ` : ''}
-      `;
+      const priceEl = document.createElement('div');
+      priceEl.className = 'item-price';
+      priceEl.innerText = window.formatCurrency(item.price);
+
+      card.appendChild(content);
+      card.appendChild(priceEl);
+
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('button')) return;
+        openItemModal(item);
+      });
+
+      if (isAdmin) {
+        const actions = document.createElement('div');
+        actions.className = 'admin-card-actions';
+        const btnEdit = document.createElement('button');
+        btnEdit.className = 'btn btn-icon';
+        btnEdit.innerText = '✎';
+        btnEdit.onclick = (ev) => { ev.stopPropagation(); openEditModal(cat.id, item.id); };
+        const btnDel = document.createElement('button');
+        btnDel.className = 'btn btn-icon';
+        btnDel.style.borderColor = 'var(--danger)';
+        btnDel.style.color = 'var(--danger)';
+        btnDel.innerText = '✕';
+        btnDel.onclick = (ev) => { ev.stopPropagation(); deleteItem(cat.id, item.id); };
+
+        actions.appendChild(btnEdit);
+        actions.appendChild(btnDel);
+        card.appendChild(actions);
+      }
+
       section.appendChild(card);
     });
 
@@ -565,60 +741,48 @@ function renderMenu() {
   });
 
   if (!hasContent) {
-    menuListEl.innerHTML = `<div class="empty-state">Nenhum item encontrado para "${searchInput.value}"</div>`;
+    menuListEl.innerHTML = `<div class="empty-state">Nenhum item encontrado para "${escapeHtml(term)}"</div>`;
   }
-}
+};
 
-searchInput.addEventListener('input', renderMenu);
+/* --------------------- SEARCH HOOK --------------------- */
+document.getElementById('searchInput').addEventListener('input', window.renderMenu);
 
-// --- MODALS (Visualização & Edição) ---
+/* --------------------- MODAL / CRUD --------------------- */
 const modalOverlay = document.getElementById('modalOverlay');
 const modalContent = document.getElementById('modalContent');
-
-function closeModal() {
+window.closeModal = function() {
   modalOverlay.classList.remove('active');
-  // Limpa o conteúdo após a animação de saída (300ms)
   setTimeout(() => { modalContent.innerHTML = ''; }, 300);
-}
+};
+modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) window.closeModal(); });
 
-// Fechar ao clicar fora
-modalOverlay.addEventListener('click', (e) => {
-  if (e.target === modalOverlay) closeModal();
-});
-
-function openItemModal(item) {
+window.openItemModal = function(item) {
   modalContent.innerHTML = `
     <div class="modal-header">
-      <h3 class="modal-title">Detalhes do Item</h3>
+      <h3 class="modal-title">Detalhes</h3>
       <button class="modal-close" onclick="closeModal()">×</button>
     </div>
     <div class="modal-body">
-      <h2 style="color:var(--gold); margin-top:0; line-height:1.2; font-family:var(--font-display)">${item.name}</h2>
+      <h2 style="color:var(--gold); margin-top:0; line-height:1.2; font-family:var(--font-display)">${escapeHtml(item.name)}</h2>
       <p style="color:var(--text-muted); font-size:16px; line-height:1.5; margin-bottom:20px;">
-        ${item.desc || 'Sem descrição adicional.'}
+        ${escapeHtml(item.desc || 'Sem descrição adicional.')}
       </p>
       <div style="height:1px; background:rgba(255,255,255,0.1); margin:10px 0;"></div>
-      <div class="modal-price-big">${formatCurrency(item.price)}</div>
+      <div class="modal-price-big">${window.formatCurrency(item.price)}</div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-primary" style="width:100%; justify-content:center" onclick="closeModal()">Voltar ao Menu</button>
+      <button class="btn btn-primary" style="width:100%; justify-content:center" onclick="closeModal()">Fechar</button>
     </div>
   `;
   modalOverlay.classList.add('active');
-}
+};
 
-// --- LÓGICA DE ADMIN (CRUD) ---
-
-// Abrir modal de EDIÇÃO ou CRIAÇÃO
-function openEditModal(catId, itemId = null) {
+window.openEditModal = function(catId, itemId = null) {
   const category = data.categories.find(c => c.id === catId);
   if (!category) return;
-
   const isNew = !itemId;
-  // Se for novo, cria objeto vazio. Se for edição, clona o item existente.
-  const item = itemId 
-    ? { ...category.items.find(i => i.id === itemId) } 
-    : { name:'', price:'', desc:'' };
+  const item = itemId ? { ...category.items.find(i => i.id === itemId) } : { name:'', price:'', desc:'' };
 
   modalContent.innerHTML = `
     <div class="modal-header">
@@ -628,34 +792,33 @@ function openEditModal(catId, itemId = null) {
     <div class="modal-body">
       <div class="form-group">
         <label class="form-label">Nome do Item</label>
-        <input type="text" id="inpName" class="form-input" value="${item.name}" placeholder="Ex: Gin Tônica">
+        <input type="text" id="inpName" class="form-input" value="${escapeHtml(item.name || '')}" placeholder="Ex: Gin Tônica">
       </div>
       <div class="form-group">
         <label class="form-label">Preço (R$)</label>
-        <input type="number" id="inpPrice" class="form-input" value="${item.price}" placeholder="0.00" step="0.50">
+        <input type="number" id="inpPrice" class="form-input" value="${item.price || ''}" placeholder="0.00" step="0.50">
       </div>
       <div class="form-group">
         <label class="form-label">Descrição / Ingredientes</label>
-        <textarea id="inpDesc" class="form-textarea" rows="4" placeholder="Ex: Acompanha gelo de sabor...">${item.desc || ''}</textarea>
+        <textarea id="inpDesc" class="form-textarea" rows="4" placeholder="Ex: Acompanha gelo de sabor...">${escapeHtml(item.desc || '')}</textarea>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveItem('${catId}', '${itemId || ''}')">Salvar Alterações</button>
+      <button class="btn btn-primary" id="saveItemBtn">${isNew ? 'Salvar' : 'Salvar'}</button>
     </div>
   `;
   modalOverlay.classList.add('active');
-}
 
-function openAddModal() {
-  if (data.categories.length === 0) {
+  document.getElementById('saveItemBtn').addEventListener('click', () => saveItem(catId, itemId || ''));
+};
+
+window.openAddModal = function() {
+  if (!data.categories || data.categories.length === 0) {
     alert("Crie uma seção primeiro!");
     return;
   }
-  
-  // Modal para escolher categoria antes de criar item
-  let catOptions = data.categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-  
+  const catOptions = data.categories.map(c => `<option value="${escapeHtml(c.id)}">${escapeHtml(c.name)}</option>`).join('');
   modalContent.innerHTML = `
     <div class="modal-header">
       <h3 class="modal-title">Adicionar onde?</h3>
@@ -668,148 +831,161 @@ function openAddModal() {
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-primary" style="width:100%; justify-content:center" onclick="goToCreateItem()">Continuar</button>
+      <button class="btn btn-primary" style="width:100%; justify-content:center" id="continueCreate">Continuar</button>
     </div>
   `;
   modalOverlay.classList.add('active');
-}
+  document.getElementById('continueCreate').addEventListener('click', () => {
+    const catId = document.getElementById('selCat').value;
+    closeModal();
+    setTimeout(() => openEditModal(catId), 300);
+  });
+};
 
-function goToCreateItem() {
-  const catId = document.getElementById('selCat').value;
-  closeModal(); // Fecha o modal de seleção
-  setTimeout(() => openEditModal(catId), 300); // Abre o de criação
-}
-
-function saveItem(catId, itemId) {
+window.saveItem = async function(catId, itemId) {
   const name = document.getElementById('inpName').value.trim();
   const priceVal = document.getElementById('inpPrice').value;
   const price = priceVal ? parseFloat(priceVal) : 0;
   const desc = document.getElementById('inpDesc').value.trim();
-
-  if (!name) return alert('O nome do item é obrigatório.');
-
+  if (!name) return alert('Nome obrigatório.');
   const catIndex = data.categories.findIndex(c => c.id === catId);
   if (catIndex === -1) return;
-
   if (itemId) {
-    // Modo Edição
     const itemIndex = data.categories[catIndex].items.findIndex(i => i.id === itemId);
     if (itemIndex > -1) {
       data.categories[catIndex].items[itemIndex] = { id: itemId, name, price, desc };
     }
   } else {
-    // Modo Criação
-    const newItem = {
-      id: 'it_' + Date.now() + Math.random().toString(36).substr(2, 5),
-      name, price, desc
-    };
+    const newItem = { id: 'it_' + Date.now() + Math.random().toString(36).substr(2,5), name, price, desc };
     data.categories[catIndex].items.push(newItem);
   }
-
-  saveData();
+  await window.saveDataToCloud();
   closeModal();
-}
+};
 
-function deleteItem(catId, itemId) {
-  if(!confirm('Tem certeza que deseja apagar este item?')) return;
+window.deleteItem = async function(catId, itemId) {
+  if (!confirm('Apagar este item?')) return;
   const cat = data.categories.find(c => c.id === catId);
-  if(cat) {
+  if (cat) {
     cat.items = cat.items.filter(i => i.id !== itemId);
-    saveData();
+    await window.saveDataToCloud();
   }
-}
+};
 
-function addNewCategory() {
+window.addNewCategory = async function() {
   const name = prompt('Nome da nova seção (Ex: Vinhos):');
-  if(name && name.trim()) {
-    data.categories.push({ 
-      id: 'cat_' + Date.now(), 
-      name: name.trim(), 
-      items: [] 
-    });
-    saveData();
+  if (name && name.trim()) {
+    data.categories.push({ id: 'cat_' + Date.now(), name: name.trim(), items: [] });
+    await window.saveDataToCloud();
   }
-}
+};
 
-function deleteCategory(catId) {
-  if(!confirm('ATENÇÃO: Isso apagará a seção inteira e todos os itens dela. Continuar?')) return;
+window.deleteCategory = async function(catId) {
+  if (!confirm('Isso apagará a seção inteira. Continuar?')) return;
   data.categories = data.categories.filter(c => c.id !== catId);
-  saveData();
-}
+  await window.saveDataToCloud();
+};
 
-// --- AUTENTICAÇÃO E ADMIN ---
-const ADMIN_PASS = 'brisa2026';
+/* --------------------- SAVE WITH DEBOUNCE --------------------- */
+let savePending = false;
+let saveTimer = null;
+window.saveDataToCloud = async function() {
+  if (!db) return alert("Sem conexão com Firestore. Recarregue ou ative o modo online para salvar.");
+  if (savePending) return;
+  savePending = true;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async () => {
+    try {
+      const docRef = doc(db, ...MENU_DOC_PATH);
+      await setDoc(docRef, data);
+      window.showToast("Alteração Salva!");
+    } catch (e) {
+      alert("Erro ao salvar: " + (e.message || e));
+    } finally {
+      savePending = false;
+    }
+  }, 300);
+};
+
+/* --------------------- TOAST --------------------- */
+window.showToast = function(msg) {
+  const toast = document.getElementById('toast');
+  const toastMsg = document.getElementById('toastMsg');
+  toastMsg.innerText = msg || "Salvo com sucesso!";
+  toast.classList.add('show');
+  setTimeout(() => { toast.classList.remove('show'); }, 3000);
+};
+
+/* --------------------- ADMIN (tap -> password modal) --------------------- */
 const logoBtn = document.getElementById('logoBtn');
-
-// Lógica de "7 toques"
 let tapCount = 0;
 let tapTimer;
+const ADMIN_PASS = 'brisa2026'; // idealmente não no client
 
-logoBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  tapCount++;
-  
-  // Feedback visual de toque (vibração leve se suportado ou console)
-  if(navigator.vibrate) navigator.vibrate(50);
-  
-  clearTimeout(tapTimer);
-  
-  if (tapCount === 7) {
-    tapCount = 0;
-    askAdmin();
-  } else {
-    tapTimer = setTimeout(() => { tapCount = 0; }, 600);
-  }
-});
+window.toggleAdmin = function(status) {
+  isAdmin = Boolean(status);
+  document.body.classList.toggle('is-admin', isAdmin);
+  renderMenu();
+};
 
-// Lógica de "Long Press" (Segurar por 3s)
-let longPressTimer;
-logoBtn.addEventListener('touchstart', (e) => {
-  // e.preventDefault(); // Comentado para permitir scroll se necessário
-  longPressTimer = setTimeout(() => {
-    if(navigator.vibrate) navigator.vibrate(200);
-    askAdmin();
-  }, 3000); 
-}, {passive: true});
-
-logoBtn.addEventListener('touchend', () => { 
-  clearTimeout(longPressTimer); 
-});
-
-logoBtn.addEventListener('mousedown', () => { 
-  longPressTimer = setTimeout(askAdmin, 3000); 
-});
-logoBtn.addEventListener('mouseup', () => { 
-  clearTimeout(longPressTimer); 
-});
-
-function askAdmin() {
-  if (isAdmin) return; // Já está logado
-  
-  // Pequeno delay para evitar conflito de UI
-  setTimeout(() => {
-    const pass = prompt('Área Administrativa\nDigite a senha:');
-    if (pass === ADMIN_PASS) {
+function showAdminPwdModal() {
+  modalContent.innerHTML = `
+    <div class="modal-header">
+      <h3 class="modal-title">Área Administrativa</h3>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Senha:</label>
+        <input type="password" id="adminPwd" class="form-input" placeholder="Senha administrativa">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" id="confirmAdmin">Entrar</button>
+    </div>
+  `;
+  modalOverlay.classList.add('active');
+  document.getElementById('confirmAdmin').addEventListener('click', () => {
+    const val = document.getElementById('adminPwd').value;
+    if (val === ADMIN_PASS) {
       toggleAdmin(true);
-      alert('Modo Admin Ativado!\nUse a barra inferior para editar.');
-    } else if (pass !== null) {
+      closeModal();
+      window.showToast("Modo Admin Ativado!");
+    } else {
       alert('Senha incorreta.');
     }
-  }, 100);
+  });
 }
 
-function toggleAdmin(status) {
-  isAdmin = status;
-  document.body.classList.toggle('is-admin', status);
-  renderMenu();
+if (logoBtn) {
+  logoBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    tapCount++;
+    clearTimeout(tapTimer);
+    if (tapCount === 7) {
+      tapCount = 0;
+      showAdminPwdModal();
+    } else {
+      tapTimer = setTimeout(() => { tapCount = 0; }, 700);
+    }
+  });
 }
 
-// Inicialização
-window.addEventListener('load', () => {
-  renderMenu();
-  console.log('Brisa Lounge Menu Carregado');
+/* --------------------- INITIALIZATION --------------------- */
+document.getElementById('searchInput').focus();
+
+// Try local JSON first; if not available, render INITIAL_DATA and rely on Firestore sync.
+tryLoadLocalJson().then(found => {
+  if (!found) {
+    // no local JSON found: keep INITIAL_DATA and render now
+    data = INITIAL_DATA;
+    renderMenu();
+  }
 });
-
 </script>
+
+
 </body>
 </html>
+
