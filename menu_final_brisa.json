@@ -1,0 +1,45 @@
+{
+  "categories": [
+    {
+      "id": "cat_drinks",
+      "name": "Drinks",
+      "items": [
+        { "id": "dk1", "name": "Caipirinha de Cachaça (300ml)", "price": 15.00, "desc": "Morango ou Limão." },
+        { "id": "dk2", "name": "Caipirinha de Vodka ou Saquê (300ml)", "price": 20.00, "desc": "Morango ou Limão." },
+        { "id": "dk3", "name": "Caipirinha Gourmet Brisa", "price": 35.00, "desc": "Especial da casa." },
+        { "id": "dk4", "name": "Gin Eternity (500ml)", "price": 15.00, "desc": "Melancia, Tropical, Maçã Verde ou Royale." },
+        { "id": "dk5", "name": "Gin Premium & Red Bull", "price": 30.00, "desc": "Com fruta." }
+      ]
+    },
+    {
+      "id": "cat_combos",
+      "name": "Combos",
+      "items": [
+        { "id": "cb1", "name": "Jack Daniel's Tradicional", "price": 280.00, "desc": "Garrafa + 4 Gelos + 4 Red Bull." },
+        { "id": "cb2", "name": "Jack Daniel's Sabores", "price": 300.00, "desc": "Honey, Fire ou Apple + acompanhamentos." },
+        { "id": "cb3", "name": "Gin Tanqueray", "price": 250.00, "desc": "Garrafa + frutas + energéticos." }
+      ]
+    },
+    {
+      "id": "cat_cervejas",
+      "name": "Cervejas",
+      "items": [
+        { "id": "br1", "name": "Original (600ml)", "price": 15.00, "desc": "Garrafa." },
+        { "id": "br2", "name": "Spaten (600ml)", "price": 17.00, "desc": "Puro malte." },
+        { "id": "br3", "name": "Heineken (600ml)", "price": 19.00, "desc": "Premium." },
+        { "id": "br4", "name": "Budweiser (Long Neck)", "price": 8.00, "desc": "" },
+        { "id": "br5", "name": "Spaten (Long Neck)", "price": 10.00, "desc": "" },
+        { "id": "br6", "name": "Heineken 0% (Long Neck)", "price": 12.00, "desc": "Sem álcool." }
+      ]
+    },
+    {
+      "id": "cat_comidas",
+      "name": "Comidas",
+      "items": [
+        { "id": "fd1", "name": "Batata com Cheddar e Bacon", "price": 35.00, "desc": "" },
+        { "id": "fd2", "name": "Porção Mista", "price": 40.00, "desc": "Escolha 2 itens." },
+        { "id": "fd3", "name": "Tábua de Picanha", "price": 100.00, "desc": "Aprox. 600g + acompanhamentos." }
+      ]
+    }
+  ]
+}
